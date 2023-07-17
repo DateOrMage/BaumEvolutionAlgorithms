@@ -1,12 +1,12 @@
-from typing import Union, Callable, Optional
-from support_functions import get_sum_conditional_func
+from typing import Union, Callable, Optional, List, Tuple
+from support_funcs.support_functions import get_sum_conditional_func
 
 
 class PenaltyFunction:
     """
     Class for creation and calculation penalty for conditional optimization.
     """
-    def __init__(self, conditional_func: list[tuple[Callable[[list[Union[int, float]]], Union[int, float]], str]],
+    def __init__(self, conditional_func: List[Tuple[Callable[[List[Union[int, float]]], Union[int, float]], str]],
                  penalty: Union[int, float] = 0) -> None:
         """
         :param conditional_func: list[tuple[Callable[[list[Union[int, float]]], Union[int, float]], str]] - conditional
@@ -18,7 +18,7 @@ class PenaltyFunction:
         """
         if conditional_func is None:
             raise Exception(f'conditional_func cannot be NoneType object'
-                            f' if used conditional optimization, have to use {list[tuple]}')
+                            f' if used conditional optimization, have to use {List[Tuple]}')
         elif type(conditional_func) != list:
             raise Exception(f'Type of conditional_func must be list, not {type(conditional_func)}')
         elif len(conditional_func) == 0:
@@ -35,7 +35,7 @@ class PenaltyFunction:
                     self.conditional_func = conditional_func
         self.penalty = penalty
 
-    def calculate(self, gens: list, iter_generation: Optional[int]) -> int | float:
+    def calculate(self, gens: list, iter_generation: Optional[int]) -> Union[int, float]:
         return self.penalty
 
 

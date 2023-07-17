@@ -1,29 +1,29 @@
 import random
-from typing import Union, Callable
-from support_functions import get_real_number_of_points, index_to_binary, get_odd_num_children, get_result_mutation,\
-      sort_list_with_index, get_balanced_selection, get_index_from_gray
-from penalty_methods import Dynamic
+from typing import List, Union, Callable, Optional
+from support_funcs.support_functions import get_real_number_of_points, index_to_binary, get_odd_num_children,\
+     get_result_mutation, sort_list_with_index, get_balanced_selection, get_index_from_gray
+from penalties.penalty_methods import Dynamic
 
 
 class BaumEvA:
 
     def __init__(self,
                  # input_data, - not implemented in current release
-                 opt_function: Callable[[list[Union[int, float]]], Union[int, float]],
+                 opt_function: Callable[[List[Union[int, float]]], Union[int, float]],
                  gen_parameters: dict,
                  num_generations: int,
                  num_individuals: int,
                  penalty_method: any = None,
-                 opt_function_value=None,
-                 is_binary_string=True,
-                 is_gray_code=False,
-                 percent_child=0.9,
-                 transfer_parents_type='best',
-                 selection_type='tournament',
-                 tournament_size=3,
-                 crossover_type='single_point',
+                 opt_function_value: Optional[Union[int, float]] = None,
+                 is_binary_string: bool = True,
+                 is_gray_code: bool = False,
+                 percent_child: float = 0.9,
+                 transfer_parents_type: str = 'best',
+                 selection_type: str = 'tournament',
+                 tournament_size: int = 3,
+                 crossover_type: str = 'single_point',
                  mutation_value: Union[str, float] = 'normal',
-                 early_stop=25,
+                 early_stop: int = 25,
                  is_print=True
                  # random_seed=None - not implemented in current release
                  ):
@@ -88,7 +88,7 @@ class BaumEvA:
         self.avg_score = []
         self.worst_score = []
 
-    def get_penalty_value(self, gens_list: list[float]):
+    def get_penalty_value(self, gens_list: List[float]):
         if self.penalty_method is None:
             return 0
         elif isinstance(self.penalty_method, Dynamic):

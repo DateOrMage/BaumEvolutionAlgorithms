@@ -1,4 +1,5 @@
 import random
+from typing import List, Tuple, Union
 
 
 def get_real_number_of_points(num_points: int):
@@ -107,7 +108,7 @@ def get_balanced_selection(scores_list, num_children, selected_idx_list=None):
     return selected_idx_list
 
 
-def get_sum_conditional_func(conditional_func: list[tuple], gens: list, power=1):
+def get_sum_conditional_func(conditional_func: List[Tuple], gens: list, power: Union[int, float] = 1):
     """
     :param conditional_func: list[tuple], array of tuples, example:
                                   [(my_func_0, 'equal'),
