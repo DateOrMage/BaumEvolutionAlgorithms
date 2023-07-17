@@ -1,6 +1,6 @@
-config.json
-main.py
-read_config.py
-test_baumeva.py
-testing_pygad.py
-testing_functions.py
+/config.json
+/read_config.py
+/test_baumeva.py
+/test_baumeva_lib.py
+/testing_pygad.py
+/testing_functions.py
