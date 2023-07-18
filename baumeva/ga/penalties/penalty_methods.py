@@ -1,5 +1,5 @@
 from typing import Union, Callable, Optional, List, Tuple
-from support_funcs.support_functions import get_sum_conditional_func
+from baumeva.ga.support_funcs.support_functions import get_sum_conditional_func
 
 
 class PenaltyFunction:

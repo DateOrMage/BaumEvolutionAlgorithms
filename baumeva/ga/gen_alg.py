@@ -1,18 +1,18 @@
 import random
 from typing import List, Union, Callable, Optional
-from support_funcs.support_functions import get_real_number_of_points, index_to_binary, get_odd_num_children,\
+from baumeva.ga.support_funcs.support_functions import get_real_number_of_points, index_to_binary, get_odd_num_children,\
      get_result_mutation, sort_list_with_index, get_balanced_selection, get_index_from_gray
-from penalties.penalty_methods import Dynamic
+from baumeva.ga.penalties.penalty_methods import Dynamic
 
 
-class BaumEvA:
+class GA:
 
     def __init__(self,
-                 # input_data, - not implemented in current release
                  opt_function: Callable[[List[Union[int, float]]], Union[int, float]],
                  gen_parameters: dict,
                  num_generations: int,
                  num_individuals: int,
+                 input_data: Optional[List[List[str]]] = None,
                  penalty_method: any = None,
                  opt_function_value: Optional[Union[int, float]] = None,
                  is_binary_string: bool = True,
@@ -42,6 +42,7 @@ class BaumEvA:
                                Example: Dynamic([(my_conditional_func_1, 'inequal'), (my_conditional_func_2, 'equal)]).
                                Default: None.
         :param num_individuals: number of individuals
+        :param input_data: list[list[str]] as num_individuals[num_gems['0' or '1']] - first generation from user
         :param opt_function_value: int/float or None - desired function value. If it is None opt_function will be
                                    minimized, else opt_function will be pursuit to opt_function_value Default: None
         :param is_binary_string: bool - in current release can not be False, default: True
@@ -63,6 +64,7 @@ class BaumEvA:
         self.gen_parameters = gen_parameters
         self.num_generations = num_generations
         self.num_individuals = num_individuals
+        self.input_data = input_data
         self.penalty_method = penalty_method
         self.opt_function_value = opt_function_value
         self.is_binary_string = is_binary_string
@@ -133,20 +135,20 @@ class BaumEvA:
         Generation first population.
         Return population: list of list string value (binary string)
         """
+        if self.input_data:
+            print(self.input_data)
+            return self.input_data
         if not self.is_binary_string:
             raise Exception('Non-binary string is not supported in this version')
         population = []
         for i in range(self.num_individuals):
             individual = ''
             for gen in self.gen_parameters:
-                if self.is_gray_code:
-                    individual += index_to_binary(value=random.randint(0, self.gen_parameters[gen][6]),
-                                                  num_bits=self.gen_parameters[gen][5], is_graycode=True)
-                else:
-                    individual += index_to_binary(value=random.randint(0, self.gen_parameters[gen][6]),
-                                                  num_bits=self.gen_parameters[gen][5])
+                individual += index_to_binary(value=random.randint(0, self.gen_parameters[gen][6]),
+                                              num_bits=self.gen_parameters[gen][5], is_graycode=self.is_gray_code)
 
             population.append(list(individual))
+        print(population)
         return population
 
     def bin_string_decoder(self, individ, idx_bits):

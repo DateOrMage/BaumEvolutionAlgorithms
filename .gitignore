@@ -4,3 +4,6 @@
 /test_baumeva_lib.py
 /testing_pygad.py
 /testing_functions.py
+/venv
+/dist/
+/baumeva.egg-info/
