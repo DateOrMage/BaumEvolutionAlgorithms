@@ -12,7 +12,8 @@ class GA:
                  gen_parameters: dict,
                  num_generations: int,
                  num_individuals: int,
-                 input_data: Optional[List[List[str]]] = None,
+                 input_data: Optional[List[List[Union[str, float]]]] = None,
+                 input_data_type: str = 'float',
                  penalty_method: any = None,
                  opt_function_value: Optional[Union[int, float]] = None,
                  is_binary_string: bool = True,
@@ -28,7 +29,7 @@ class GA:
                  # random_seed=None - not implemented in current release
                  ):
         """
-        Initialization class BaumEvA for generation parameters of genetics algorithm.
+        Initialization class GA for generation parameters of genetics algorithm.
         :param opt_function: function to be solved, not fitness function! Input argument have to type list.
                              Example:
                                 def my_func(x:list):
@@ -42,7 +43,8 @@ class GA:
                                Example: Dynamic([(my_conditional_func_1, 'inequal'), (my_conditional_func_2, 'equal)]).
                                Default: None.
         :param num_individuals: number of individuals
-        :param input_data: list[list[str]] as num_individuals[num_gems['0' or '1']] - first generation from user
+        :param input_data: list[list[str|float]] as num_individuals[num_gems['0' or '1']] - first generation from user
+        :param input_data_type: str - type of input data: 'binary_string', 'float'. Default: 'float'
         :param opt_function_value: int/float or None - desired function value. If it is None opt_function will be
                                    minimized, else opt_function will be pursuit to opt_function_value Default: None
         :param is_binary_string: bool - in current release can not be False, default: True
@@ -59,12 +61,13 @@ class GA:
         :param early_stop: int - early stopping criteria, number of generation without improve. Default: 25
         :param is_print: bool - printed results of genetic algorithm. Default: True.
         """
-        # self.input_data = input_data  # not used
+
         self.opt_function = opt_function
         self.gen_parameters = gen_parameters
         self.num_generations = num_generations
         self.num_individuals = num_individuals
         self.input_data = input_data
+        self.input_data_type = input_data_type
         self.penalty_method = penalty_method
         self.opt_function_value = opt_function_value
         self.is_binary_string = is_binary_string
@@ -130,25 +133,77 @@ class GA:
                 idx_bits.append(idx_bits[-1] + num_bits)
         return idx_bits
 
-    def get_first_generation(self):
+    def check_input_data(self) -> None:
         """
-        Generation first population.
-        Return population: list of list string value (binary string)
+        Function for checking input data.
+        :return: Exception or None
         """
-        if self.input_data:
-            print(self.input_data)
+        if type(self.input_data) is list:
+            if len(self.input_data) > self.num_individuals:
+                raise Exception(f'Number of individuals in input_data: {len(self.input_data)} > number of individuals'
+                                f' in num_individuals: {self.num_individuals}')
+            for inner_obj in self.input_data:
+                if type(inner_obj) is list:
+                    if self.input_data_type == 'binary_string' and len(inner_obj) != self.len_bin_str:
+                        raise Exception(f'Length of binary genotype is not correct')
+                    if self.input_data_type == 'float' and len(inner_obj) != len(self.gen_parameters.keys()):
+                        raise Exception(f'Length of genotype is not correct')
+                    for gen in inner_obj:
+                        if self.input_data_type == 'binary_string' and type(gen) is not str:
+                            raise Exception(f'Type of {gen} is not string')
+                        elif self.input_data_type == 'binary_string' and type(gen) is str:
+                            if gen != '0' and gen != '1':
+                                raise Exception(f'Gen {gen} is not equal "0" or "1"')
+                        elif (self.input_data_type == 'float') and\
+                                ((type(gen) is not float) and (type(gen) is not int)):
+                            raise Exception(f'Type of {gen} is not float or int')
+            # return True
+                else:
+                    raise Exception(f'Type of {inner_obj} is not list')
+        else:
+            raise Exception(f'Type of {self.input_data} is not list')
+
+    def convert_to_gen_type(self) -> List[List[str]]:
+        """
+        Transformation input data to gen type
+        :return: input_population: List[List[str]]
+        """
+        if self.input_data_type == 'float':
+            input_population = []
+            for individ in self.input_data:
+                input_individ = ''
+                for gen_idx, gen_value in enumerate(individ):
+                    if gen_value < self.gen_parameters[gen_idx][0] or gen_value > self.gen_parameters[gen_idx][1]:
+                        raise Exception(f'Gen: {gen_value} is out of range:'
+                                        f' ({self.gen_parameters[gen_idx][0]}, {self.gen_parameters[gen_idx][1]})')
+                    step_idx = round((gen_value - self.gen_parameters[gen_idx][0]) / self.gen_parameters[gen_idx][4])
+                    input_individ += index_to_binary(value=step_idx, num_bits=self.gen_parameters[gen_idx][5],
+                                                     is_graycode=self.is_gray_code)
+                input_population.append(list(input_individ))
+            return input_population
+        else:
             return self.input_data
-        if not self.is_binary_string:
-            raise Exception('Non-binary string is not supported in this version')
-        population = []
-        for i in range(self.num_individuals):
+
+    def first_generation(self, population):
+        for i in range(self.num_individuals-len(population)):
             individual = ''
             for gen in self.gen_parameters:
                 individual += index_to_binary(value=random.randint(0, self.gen_parameters[gen][6]),
                                               num_bits=self.gen_parameters[gen][5], is_graycode=self.is_gray_code)
 
             population.append(list(individual))
-        print(population)
+        return population
+
+    def get_first_generation(self) -> List[List[str]]:
+        """
+        Generation first population.
+        Return population: list of list string value (binary string)
+        """
+        population = []
+        if self.input_data:
+            self.check_input_data()
+            population = self.convert_to_gen_type()
+        population = self.first_generation(population)
         return population
 
     def bin_string_decoder(self, individ, idx_bits):
@@ -358,6 +413,9 @@ class GA:
         """
         idx_bits = self.get_gen_parameters()
         self.len_bin_str = idx_bits[-1]
+        print(f'idx_bits: {idx_bits}')
+        if not self.is_binary_string:
+            raise Exception('Non-binary string is not supported in this version')
         population = self.get_first_generation()
         scores_list = self.get_scores(population, idx_bits)
         self.tracking(scores_list, population, idx_bits)
