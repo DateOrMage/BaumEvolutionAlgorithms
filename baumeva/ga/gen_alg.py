@@ -391,8 +391,17 @@ class GA:
             if free_slots > 0 and self.transfer_parents_type == 'best':
                 scores_sorted_list = sort_list_with_index(value_list=scores_list)
                 i = 0
+
+                non_equal = 0
+                for idx in range(len(scores_sorted_list)-1):
+                    if scores_sorted_list[idx]['value'] != scores_sorted_list[idx+1]['value']:
+                        non_equal += 1
+
                 while len(children) < self.num_individuals:
-                    if population[scores_sorted_list[i]['id']] != self.best_solution['bin_gens']:
+                    if free_slots <= non_equal:
+                        if population[scores_sorted_list[i]['id']] != self.best_solution['bin_gens']:
+                            children.append(population[scores_sorted_list[i]['id']])
+                    else:
                         children.append(population[scores_sorted_list[i]['id']])
                     i += 1
             if free_slots > 0 and self.transfer_parents_type == 'random':
@@ -413,15 +422,14 @@ class GA:
         """
         idx_bits = self.get_gen_parameters()
         self.len_bin_str = idx_bits[-1]
-        print(f'idx_bits: {idx_bits}')
+        # print(f'idx_bits: {idx_bits}')
         if not self.is_binary_string:
             raise Exception('Non-binary string is not supported in this version')
         population = self.get_first_generation()
         scores_list = self.get_scores(population, idx_bits)
         self.tracking(scores_list, population, idx_bits)
         for i in range(self.num_generations - 1):
-            # print('-'*150)
-            # print(f'Generation {i+1}:')
+
             self.idx_generation += 1
             selected_idx_list = self.selection(population, scores_list)
             children = self.crossover(selected_idx_list, population)
@@ -430,11 +438,15 @@ class GA:
             population = children
             scores_list = self.get_scores(population, idx_bits)
             self.tracking(scores_list, population, idx_bits)
+            if self.is_print:
+                print('-'*65)
+                print(f'Generation {i+1}:')
+                print(f'Best fitness scores: {self.best_score[-1]}')
             # print('Generation_no_up', self.generation_no_up)
             if self.generation_no_up >= self.early_stop:
                 print(f'Early stop: {self.early_stop} rounds without improving, index stopped generation - {i + 1}.')
                 break
-        print('-' * 150)
+        print('-'*65)
         if self.is_print:
             self.print_result()
 
