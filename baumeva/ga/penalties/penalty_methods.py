@@ -1,4 +1,4 @@
-from typing import Union, Callable, Optional, List, Tuple
+from typing import Union, Callable, Optional, List, Tuple, Any
 from baumeva.ga.support_funcs.support_functions import get_sum_conditional_func
 
 
@@ -6,14 +6,15 @@ class PenaltyFunction:
     """
     Class for creation and calculation penalty for conditional optimization.
     """
-    def __init__(self, conditional_func: List[Tuple[Callable[[List[Union[int, float]]], Union[int, float]], str]],
+    def __init__(self, conditional_func: List[Tuple[Callable[[List[Union[int, float]]], Union[int, float]], str, Any]],
                  penalty: Union[int, float] = 0) -> None:
         """
-        :param conditional_func: list[tuple[Callable[[list[Union[int, float]]], Union[int, float]], str]] - conditional
-                                 function. Used only 2 types of conditional: g(x) <= 0 ('inequal') or
-                                 h(x) == 0 ('equal'). Example: def my_f1(x: list[int|float]) -> int|float:
-                                 return sum(x) - 1; def my_f2(x: list[int|float]) -> int|float: return max(x);
-                                 conditional_func = [(my_f1, 'equal'), (my_f2, 'inequal')]
+        :param conditional_func: list[tuple[Callable[[list[Union[int, float]]], Union[int, float]], str, Any]] -
+                                 conditional function. Used only 2 types of conditional: g(x) <= 0 ('inequal') or
+                                 h(x) == 0 ('equal').
+                                 Example: def my_f1(gens: list[int|float]) -> int|float: return sum(gens) - 1;
+                                 def my_f2(input_data, gens: list[int|float]) -> int|float: return max(gens)*input_data;
+                                 conditional_func = [(my_f1, 'equal', None), (my_f2, 'inequal', input_data)]
         :param penalty: int or float, default: 0.
         """
         if conditional_func is None:
@@ -27,8 +28,8 @@ class PenaltyFunction:
             for tpl in conditional_func:
                 if type(tpl) != tuple:
                     raise Exception(f'Type of elements conditional_func must be tuple, not {type(tpl)}')
-                elif len(tpl) != 2:
-                    raise Exception(f'Incorrect size of tuple, excepted - 2, given - {len(tpl)}')
+                elif len(tpl) != 3:
+                    raise Exception(f'Incorrect size of tuple, excepted - 3, given - {len(tpl)}')
                 elif (tpl[1] != 'equal') and (tpl[1] != 'inequal'):
                     raise Exception(f'Unexpected value: {tpl[1]}, must be "equal" or "inequal"')
                 else:
@@ -53,7 +54,7 @@ class Dynamic(PenaltyFunction):
         return cls.__name__
 
     def calculate(self, gens, iter_generation):
-        super().calculate(gens, iter_generation)
+        # super().calculate(gens, iter_generation)
         sum_func = get_sum_conditional_func(self.conditional_func, gens=gens, power=self.betta)
         self.penalty = self.delta*((self.c*iter_generation)**self.alpha)*sum_func
         return self.penalty

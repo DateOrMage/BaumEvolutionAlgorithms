@@ -120,9 +120,15 @@ def get_sum_conditional_func(conditional_func: List[Tuple], gens: list, power: U
     total_res = 0
     for cfl_tuple in conditional_func:
         if cfl_tuple[1] == "equal":
-            res = abs(cfl_tuple[0](gens))
+            if cfl_tuple[2]:
+                res = abs(cfl_tuple[0](cfl_tuple[2], gens))
+            else:
+                res = abs(cfl_tuple[0](gens))
         elif cfl_tuple[1] == "inequal":
-            res = max(0, cfl_tuple[0](gens))
+            if cfl_tuple[2]:
+                res = max(0, cfl_tuple[0](cfl_tuple[2], gens))
+            else:
+                res = max(0, cfl_tuple[0](gens))
         else:
             raise Exception(f'Unexpected type of conditional function: {cfl_tuple[1]}.'
                             f' Please select "equal" or "inequal"')

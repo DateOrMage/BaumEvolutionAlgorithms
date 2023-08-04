@@ -1,19 +1,21 @@
 import random
-from typing import List, Union, Callable, Optional
-from baumeva.ga.support_funcs.support_functions import get_real_number_of_points, index_to_binary, get_odd_num_children,\
-     get_result_mutation, sort_list_with_index, get_balanced_selection, get_index_from_gray
+from typing import List, Union, Callable, Optional, Any
+from baumeva.ga.support_funcs.support_functions import get_real_number_of_points, index_to_binary,\
+     get_odd_num_children, get_result_mutation, sort_list_with_index, get_balanced_selection, get_index_from_gray
 from baumeva.ga.penalties.penalty_methods import Dynamic
 
 
 class GA:
 
     def __init__(self,
-                 opt_function: Callable[[List[Union[int, float]]], Union[int, float]],
+                 opt_function: Union[Callable[[any, List[Union[int, float]]], Union[int, float]], Callable[
+                               [List[Union[int, float]]], Union[int, float]]],
                  gen_parameters: dict,
                  num_generations: int,
                  num_individuals: int,
-                 input_data: Optional[List[List[Union[str, float]]]] = None,
-                 input_data_type: str = 'float',
+                 input_data: Any = None,
+                 input_generation: Optional[List[List[Union[str, float]]]] = None,
+                 input_generation_type: str = 'float',
                  penalty_method: any = None,
                  opt_function_value: Optional[Union[int, float]] = None,
                  is_binary_string: bool = True,
@@ -24,16 +26,21 @@ class GA:
                  tournament_size: int = 3,
                  crossover_type: str = 'single_point',
                  mutation_value: Union[str, float] = 'normal',
-                 early_stop: int = 25,
+                 early_stop: int = 10,
                  is_print=True
                  # random_seed=None - not implemented in current release
                  ):
         """
         Initialization class GA for generation parameters of genetics algorithm.
-        :param opt_function: function to be solved, not fitness function! Input argument have to type list.
-                             Example:
-                                def my_func(x:list):
-                                    return x[0]*2 - 1
+        :param opt_function: function to be solved, not fitness function! First argument is input data: any, second one
+                             is gens: list[int|float]. Input data is not required in yours function, but if u have it,
+                              u must fill input_data argument in GA.
+                             Example with input_data:
+                                def my_func(data: tuple, gens: list):
+                                    return gens[0]*data[0] + gens[1]*data[1]
+                            Example without input_data:
+                                def my_func(gens: list):
+                                    return gens[0]*2 + gens[1]*3
         :param opt_function_value: desired function value
         :param gen_parameters: dict - definition gens, example: {gen1(int): [min(float), max(float), step(float)],
                                                           gen2(int): ... }
@@ -43,8 +50,10 @@ class GA:
                                Example: Dynamic([(my_conditional_func_1, 'inequal'), (my_conditional_func_2, 'equal)]).
                                Default: None.
         :param num_individuals: number of individuals
-        :param input_data: list[list[str|float]] as num_individuals[num_gems['0' or '1']] - first generation from user
-        :param input_data_type: str - type of input data: 'binary_string', 'float'. Default: 'float'
+        :param input_data: any, input data in opt_function
+        :param input_generation: list[list[str|float]] as num_individuals[num_gems['0' or '1']] - first generation from
+                                 user
+        :param input_generation_type: str - type of input data: 'binary_string', 'float'. Default: 'float'
         :param opt_function_value: int/float or None - desired function value. If it is None opt_function will be
                                    minimized, else opt_function will be pursuit to opt_function_value Default: None
         :param is_binary_string: bool - in current release can not be False, default: True
@@ -67,7 +76,8 @@ class GA:
         self.num_generations = num_generations
         self.num_individuals = num_individuals
         self.input_data = input_data
-        self.input_data_type = input_data_type
+        self.input_generation = input_generation
+        self.input_generation_type = input_generation_type
         self.penalty_method = penalty_method
         self.opt_function_value = opt_function_value
         self.is_binary_string = is_binary_string
@@ -87,7 +97,7 @@ class GA:
         self.best_solution = {'fitness_score': -2**31,
                               'bin_gens': [],
                               'real_gens': [],
-                              'function_result': None,
+                              'function_result': -2**31,
                               'idx_generation': self.idx_generation}
         self.best_score = []
         self.avg_score = []
@@ -106,10 +116,17 @@ class GA:
         Fitness function witch return value from 0 to 1 or maximum.
         """
         if self.opt_function_value is None:
-            return -(self.opt_function(gens_list) + self.get_penalty_value(gens_list))
+            if self.input_data:
+                return -(self.opt_function(self.input_data, gens_list) + self.get_penalty_value(gens_list))
+            else:
+                return -(self.opt_function(gens_list) + self.get_penalty_value(gens_list))
         else:
-            return 1.0 /\
-                (1 + abs(self.opt_function_value - (self.opt_function(gens_list) + self.get_penalty_value(gens_list))))
+            if self.input_data:
+                return 1.0 / (1 + abs(self.opt_function_value - (self.opt_function(self.input_data, gens_list) +
+                                                                 self.get_penalty_value(gens_list))))
+            else:
+                return 1.0 / (1 + abs(self.opt_function_value - (self.opt_function(gens_list)
+                                                                 + self.get_penalty_value(gens_list))))
 
     def get_gen_parameters(self):
         """
@@ -133,44 +150,44 @@ class GA:
                 idx_bits.append(idx_bits[-1] + num_bits)
         return idx_bits
 
-    def check_input_data(self) -> None:
+    def check_input_generation(self) -> None:
         """
         Function for checking input data.
         :return: Exception or None
         """
-        if type(self.input_data) is list:
-            if len(self.input_data) > self.num_individuals:
-                raise Exception(f'Number of individuals in input_data: {len(self.input_data)} > number of individuals'
-                                f' in num_individuals: {self.num_individuals}')
-            for inner_obj in self.input_data:
+        if type(self.input_generation) is list:
+            if len(self.input_generation) > self.num_individuals:
+                raise Exception(f'Number of individuals in input_generation: {len(self.input_generation)} > number of'
+                                f' individuals in num_individuals: {self.num_individuals}')
+            for inner_obj in self.input_generation:
                 if type(inner_obj) is list:
-                    if self.input_data_type == 'binary_string' and len(inner_obj) != self.len_bin_str:
+                    if self.input_generation_type == 'binary_string' and len(inner_obj) != self.len_bin_str:
                         raise Exception(f'Length of binary genotype is not correct')
-                    if self.input_data_type == 'float' and len(inner_obj) != len(self.gen_parameters.keys()):
+                    if self.input_generation_type == 'float' and len(inner_obj) != len(self.gen_parameters.keys()):
                         raise Exception(f'Length of genotype is not correct')
                     for gen in inner_obj:
-                        if self.input_data_type == 'binary_string' and type(gen) is not str:
+                        if self.input_generation_type == 'binary_string' and type(gen) is not str:
                             raise Exception(f'Type of {gen} is not string')
-                        elif self.input_data_type == 'binary_string' and type(gen) is str:
+                        elif self.input_generation_type == 'binary_string' and type(gen) is str:
                             if gen != '0' and gen != '1':
                                 raise Exception(f'Gen {gen} is not equal "0" or "1"')
-                        elif (self.input_data_type == 'float') and\
+                        elif (self.input_generation_type == 'float') and\
                                 ((type(gen) is not float) and (type(gen) is not int)):
                             raise Exception(f'Type of {gen} is not float or int')
             # return True
                 else:
                     raise Exception(f'Type of {inner_obj} is not list')
         else:
-            raise Exception(f'Type of {self.input_data} is not list')
+            raise Exception(f'Type of {self.input_generation} is not list')
 
     def convert_to_gen_type(self) -> List[List[str]]:
         """
         Transformation input data to gen type
         :return: input_population: List[List[str]]
         """
-        if self.input_data_type == 'float':
+        if self.input_generation_type == 'float':
             input_population = []
-            for individ in self.input_data:
+            for individ in self.input_generation:
                 input_individ = ''
                 for gen_idx, gen_value in enumerate(individ):
                     if gen_value < self.gen_parameters[gen_idx][0] or gen_value > self.gen_parameters[gen_idx][1]:
@@ -182,7 +199,7 @@ class GA:
                 input_population.append(list(input_individ))
             return input_population
         else:
-            return self.input_data
+            return self.input_generation
 
     def first_generation(self, population):
         for i in range(self.num_individuals-len(population)):
@@ -200,8 +217,8 @@ class GA:
         Return population: list of list string value (binary string)
         """
         population = []
-        if self.input_data:
-            self.check_input_data()
+        if self.input_generation:
+            self.check_input_generation()
             population = self.convert_to_gen_type()
         population = self.first_generation(population)
         return population
@@ -246,7 +263,8 @@ class GA:
             self.best_solution['bin_gens'] = population[scores_list.index(max(scores_list))]
             self.best_solution['real_gens'] = self.bin_string_decoder(individ=self.best_solution['bin_gens'],
                                                                       idx_bits=idx_bits)
-            self.best_solution['function_result'] = self.opt_function(self.best_solution['real_gens'])
+            self.best_solution['function_result'] = self.opt_function(self.input_data, self.best_solution['real_gens'])\
+                if self.input_data else self.opt_function(self.best_solution['real_gens'])
             self.best_solution['idx_generation'] = self.idx_generation
             self.generation_no_up = 0
         else:
@@ -325,12 +343,12 @@ class GA:
                 while point_list[0] == point_list[1]:
                     point_list = [random.randint(1, self.len_bin_str - 1), random.randint(1, self.len_bin_str - 1)]
                 point_list.sort()
-                child_0 = population[selected_idx_list[i]][:point_list[0]] + \
-                          population[selected_idx_list[-i - 1]][point_list[0]:point_list[1]] +\
-                          population[selected_idx_list[i]][point_list[1]:]
-                child_1 = population[selected_idx_list[-i - 1]][:point_list[0]] +\
-                          population[selected_idx_list[i]][point_list[0]:point_list[1]] +\
-                          population[selected_idx_list[-i - 1]][point_list[1]:]
+                child_0 = population[selected_idx_list[i]][:point_list[0]] + population[
+                          selected_idx_list[-i - 1]][point_list[0]:point_list[1]] + population[
+                          selected_idx_list[i]][point_list[1]:]
+                child_1 = population[selected_idx_list[-i - 1]][:point_list[0]] + population[
+                          selected_idx_list[i]][point_list[0]:point_list[1]] + population[
+                          selected_idx_list[-i - 1]][point_list[1]:]
                 children.append(child_0)
                 children.append(child_1)
         elif self.crossover_type == 'equable':
