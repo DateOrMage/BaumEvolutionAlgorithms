@@ -16,6 +16,8 @@ class PenaltyFunction:
                                  def my_f2(input_data, gens: list[int|float]) -> int|float: return max(gens)*input_data;
                                  conditional_func = [(my_f1, 'equal', None), (my_f2, 'inequal', input_data)]
         :param penalty: int or float, default: 0.
+
+        :return None
         """
         if conditional_func is None:
             raise Exception(f'conditional_func cannot be NoneType object'
