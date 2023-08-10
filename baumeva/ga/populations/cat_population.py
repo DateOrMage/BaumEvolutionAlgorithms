@@ -4,11 +4,23 @@ from .base_population import BasePopulation
 
 
 class CatPopulation(BasePopulation):
+    """
+    A class for representing a categorical population in a genetic algorithm.
+    Inherits from BasePopulation.
+    """
     num_individ: int = None
     gens: tuple = None
     input_population: List[list] = None
 
     def set_params(self, num_individ: int, gens: tuple, input_population: List[list] = None) -> None:
+        """
+         Initialization of categorical population.
+
+         :param num_individ: the number of individuals in the population.
+         :param gens: tuple specifying the range of categorical values for each gene.
+                      Each element in the tuple should be a tuple with (start, end, step) values.
+         :param input_population: optional input population to be used for initialization.
+         """
         if input_population:
             if len(input_population) > num_individ:
                 raise Exception(f'Size of input population: {len(input_population)} more then number of individuals:'
