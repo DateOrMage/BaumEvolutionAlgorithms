@@ -4,9 +4,6 @@ from .base_population import BasePopulation
 
 
 class CatPopulation(BasePopulation):
-    num_individ: int = None
-    gens: tuple = None
-    input_population: List[list] = None
 
     def set_params(self, num_individ: int, gens: tuple, input_population: List[list] = None) -> None:
         if input_population:
@@ -34,10 +31,4 @@ class CatPopulation(BasePopulation):
         for i in range(num_empty_individ):
             self.add_dict(genotype=self.get_generated_individ(), score=None, obj_score=None)
 
-
-if __name__ == '__main__':
-    population = CatPopulation()
-    population.set_params(num_individ=10, gens=((0, 10, 1), (-10, 0, 1)), input_population=[[2, 0], [3, -1]])
-    population.fill()
-    for individual in population:
-        print(individual)
+        self.add_idx_individ()
