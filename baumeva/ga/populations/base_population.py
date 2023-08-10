@@ -15,7 +15,8 @@ class BasePopulation(ABC, list):
 
     def sort_by_dict(self, key_dict='score', reverse=False) -> None:
         self.sort(key=lambda d: d[key_dict], reverse=reverse)
-        self.is_sorted = True
+        if key_dict == 'score':
+            self.is_sorted = True
 
     def add_dict(self, **data) -> None:
         self.append(data)
