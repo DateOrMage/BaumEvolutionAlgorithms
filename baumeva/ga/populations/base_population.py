@@ -7,6 +7,9 @@ class BasePopulation(ABC, list):
     Abstract class for representing a population in a genetic algorithm.
     """
     is_sorted: bool = False
+    num_individ: int = None
+    gens: tuple = None
+    input_population: List[list] = None
 
     @abstractmethod
     def set_params(self, num_individ: int, gens: tuple, input_population: List[list] = None) -> None:
@@ -52,3 +55,9 @@ class BasePopulation(ABC, list):
         :return: None
         """
         self.append(data)
+
+    def add_idx_individ(self) -> None:
+        i = 0
+        for individ in self:
+            individ['idx_individ'] = i
+            i += 1
