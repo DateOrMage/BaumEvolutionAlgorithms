@@ -15,3 +15,7 @@ class OrderCatPopulation(CatPopulation):
         """
         genotype = sample(range(self.gens[0], self.gens[1]+1), self.gens[2])
         return genotype
+
+    @staticmethod
+    def get_empty_copy():
+        return OrderCatPopulation()

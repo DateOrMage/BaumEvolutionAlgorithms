@@ -4,6 +4,6 @@ from baumeva.ga import GaData
 
 class BaseSelection(ABC):
 
-    @abstractmethod
     def execute(self, ga_data: GaData) -> None:
-        pass
+        ga_data.population.reset_idx_individ()
+        ga_data.parents = ga_data.population.get_empty_copy()

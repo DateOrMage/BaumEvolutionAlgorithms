@@ -44,3 +44,7 @@ class CatPopulation(BasePopulation):
             self.add_dict(genotype=self.get_generated_individ(), score=None, obj_score=None)
 
         self.reset_idx_individ()
+
+    @staticmethod
+    def get_empty_copy():
+        return CatPopulation()

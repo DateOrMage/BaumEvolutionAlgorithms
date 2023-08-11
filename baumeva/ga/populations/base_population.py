@@ -61,3 +61,8 @@ class BasePopulation(ABC, list):
         for individ in self:
             individ['idx_individ'] = i
             i += 1
+
+    @staticmethod
+    @abstractmethod
+    def get_empty_copy():
+        pass
