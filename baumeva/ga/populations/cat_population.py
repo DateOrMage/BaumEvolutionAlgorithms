@@ -43,4 +43,4 @@ class CatPopulation(BasePopulation):
         for i in range(num_empty_individ):
             self.add_dict(genotype=self.get_generated_individ(), score=None, obj_score=None)
 
-        self.add_idx_individ()
+        self.reset_idx_individ()
