@@ -21,9 +21,8 @@ class TournamentSelection(BaseSelection):
                 best = deepcopy(ga_data.population[idx])
         return best
 
-    def tournament(self, ga_data: GaData) -> BaseSelection:
+    def tournament(self, ga_data: GaData) -> None:
         idx_total = list(range(ga_data.population.num_individ))
-        selected_parents = ga_data.population.get_empty_copy()
         total_num_parents = int(ga_data.children_percent*ga_data.population.num_individ)
         for i in range(total_num_parents):
             if len(idx_total) >= self.tournament_size:
@@ -32,13 +31,9 @@ class TournamentSelection(BaseSelection):
                 tournament = idx_total
             best = self.get_best(tournament, ga_data)
             idx_total.remove(best['idx_individ'])
-            selected_parents.append(best)
-
-        return selected_parents
+            ga_data.parents.append(best)
 
     def execute(self, ga_data: GaData) -> None:
-
         self.check_tournament_size(num_individ=ga_data.population.num_individ)
-        ga_data.population.reset_idx_individ()
-        ga_data.parents = self.tournament(ga_data)
-
+        super().execute(ga_data)
+        self.tournament(ga_data)
