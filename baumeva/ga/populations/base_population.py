@@ -56,7 +56,7 @@ class BasePopulation(ABC, list):
         """
         self.append(data)
 
-    def add_idx_individ(self) -> None:
+    def reset_idx_individ(self) -> None:
         i = 0
         for individ in self:
             individ['idx_individ'] = i
