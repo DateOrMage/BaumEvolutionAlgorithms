@@ -1,3 +1,4 @@
+from copy import deepcopy
 from .populations import BasePopulation
 
 
@@ -35,11 +36,11 @@ class GaData:
         self.historical_worst.append(self.population[0]['score'])
 
         if self.best_solution is None:
-            self.best_solution = self.population[-1]
+            self.best_solution = deepcopy(self.population[-1])
             self.best_solution['idx_generation'] = self.idx_generation
 
         elif self.best_solution['score'] < self.population[-1]['score']:
-            self.best_solution = self.population[-1]
+            self.best_solution = deepcopy(self.population[-1])
             self.best_solution['idx_generation'] = self.idx_generation
             self.num_generation_no_improve = 0
         else:

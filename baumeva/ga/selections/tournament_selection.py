@@ -1,4 +1,5 @@
 from random import sample
+from copy import deepcopy
 from .base_selection import BaseSelection
 from baumeva.ga import GaData
 
@@ -17,7 +18,7 @@ class TournamentSelection(BaseSelection):
         best = ga_data.population[tournament[0]]
         for idx in tournament[1:]:
             if ga_data.population[idx]['score'] > best['score']:
-                best = ga_data.population[idx].copy()
+                best = deepcopy(ga_data.population[idx])
         return best
 
     def tournament(self, ga_data: GaData) -> BaseSelection:
