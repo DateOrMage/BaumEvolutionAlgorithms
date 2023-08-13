@@ -50,13 +50,18 @@ class BasePopulation(ABC, list):
         """
         Add an individual to the population.
 
-        :param data: Dictionary containing data for the individual.
+        :param data: dictionary containing data for the individual.
 
         :return: None
         """
         self.append(data)
 
     def reset_idx_individ(self) -> None:
+        """
+        Reset indexes ('idx_individ' attribute) of individuals in the population.
+
+        :return: None
+        """
         i = 0
         for individ in self:
             individ['idx_individ'] = i

@@ -4,6 +4,10 @@ from .cat_population import CatPopulation
 
 
 class OrderCatPopulation(CatPopulation):
+    """
+    Class for representing ordered categorical population in a genetic algorithm.
+    Inherits from OrderBasePopulation.
+    """
 
     def get_generated_individ(self) -> List[int]:
         """
@@ -18,4 +22,9 @@ class OrderCatPopulation(CatPopulation):
 
     @staticmethod
     def get_empty_copy():
+        """
+        Get an empty instance of OrderCatPopulation.
+
+        :return: An empty instance of OrderCatPopulation.
+        """
         return OrderCatPopulation()
