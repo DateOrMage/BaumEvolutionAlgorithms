@@ -22,7 +22,7 @@ class TournamentSelection(BaseSelection):
         return best
 
     def tournament(self, ga_data: GaData) -> None:
-        idx_total = list(range(ga_data.population.num_individ))
+        idx_total = list(range(len(ga_data.population)))
         total_num_parents = int(ga_data.children_percent*ga_data.population.num_individ)
         for i in range(total_num_parents):
             if len(idx_total) >= self.tournament_size:
