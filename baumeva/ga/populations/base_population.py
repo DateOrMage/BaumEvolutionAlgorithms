@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 
 class BasePopulation(ABC, list):
@@ -71,3 +71,9 @@ class BasePopulation(ABC, list):
     @abstractmethod
     def get_empty_copy():
         pass
+
+    def get_empty_individ(self) -> Optional[dict]:
+        if len(self) > 0:
+            return dict.fromkeys(self[0].keys())
+        else:
+            return None
