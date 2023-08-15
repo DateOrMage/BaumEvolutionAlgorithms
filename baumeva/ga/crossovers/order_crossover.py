@@ -9,7 +9,7 @@ class OrderCrossover(BaseCrossover):
         self.len_individ = None
 
     def get_idx_segment(self) -> list:
-        idx_segment = sample(range(1, self.len_individ - 1), 2)
+        idx_segment = sample(range(1, self.len_individ), 2)
         idx_segment.sort()
         return idx_segment
 
