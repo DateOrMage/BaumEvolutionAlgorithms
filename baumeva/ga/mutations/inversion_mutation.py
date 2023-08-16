@@ -3,8 +3,18 @@ from .base_combinatory_mutation import BaseCombinatoryMutation
 
 
 class InversionMutation(BaseCombinatoryMutation):
+    """
+    A class for implementing inversion mutation in a genetic algorithm.
+    Inherits from BaseCombinatoryMutation.
+    """
 
     def get_mutation(self, child: dict) -> dict:
+        """
+        Perform inversion mutation on a child individual.
+
+        :param child: A dictionary representing the child individual.
+        :return: The mutated child individual.
+        """
 
         idx_segment = sample(range(0, len(child['genotype'])), 2)
         idx_segment.sort()

@@ -70,9 +70,17 @@ class BasePopulation(ABC, list):
     @staticmethod
     @abstractmethod
     def get_empty_copy():
+        """
+        Abstract method for getting an empty copy of the population.
+        """
         pass
 
     def get_empty_individ(self) -> Optional[dict]:
+        """
+        Get an empty individual dictionary with keys matching the population's individuals.
+
+        :return: An empty individual dictionary or None if the population is empty.
+        """
         if len(self) > 0:
             return dict.fromkeys(self[0].keys())
         else:

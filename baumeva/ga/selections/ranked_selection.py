@@ -21,6 +21,12 @@ class RankedSelection(BalancedSelection):
         pass
 
     def add_probabilities(self, ga_data: GaData):
+        """
+        Calculate ranks and selection probabilities based on individuals' scores.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: None
+        """
         prev_score = -1
         count = 1
         for idx in range(len(ga_data.population)):
@@ -39,4 +45,10 @@ class RankedSelection(BalancedSelection):
         super().add_probabilities(ga_data)
 
     def execute(self, ga_data: GaData) -> None:
+        """
+        Execute the selection operation.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: None
+        """
         super().execute(ga_data)

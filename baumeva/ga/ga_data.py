@@ -3,6 +3,24 @@ from .populations import BasePopulation
 
 
 class GaData:
+    """
+    Class for holding and managing data related to a genetic algorithm run.
+
+    Attributes:
+        idx_generation (int): Index of the current generation.
+        num_generation_no_improve (int): Number of consecutive generations with no improvement.
+        population (BasePopulation): Current population of individuals.
+        parents (BasePopulation): Selected parent individuals for crossover.
+        children (BasePopulation): Offspring individuals produced by crossover.
+        historical_best (list): List of historical best scores for each generation.
+        historical_mediocre (list): List of historical average scores for each generation.
+        historical_worst (list): List of historical worst scores for each generation.
+        best_solution (dict): Dictionary representing the best individual solution found so far.
+
+    Methods:
+        get_avg_score()
+        update()
+    """
     idx_generation: int = 0
     num_generation_no_improve: int = 0
     population: BasePopulation = None
@@ -14,11 +32,24 @@ class GaData:
     best_solution: dict = None
 
     def __init__(self, num_generations: int, children_percent: float = 0.9, early_stop: int = 10) -> None:
+        """
+        Initialize the GaData instance.
+
+        :param num_generations: number of generations the genetic algorithm will run.
+        :param children_percent: percentage of cheldren to be created as part of new offsprings.
+        :param early_stop: number of consecutive generations with no improvement to trigger early stopping.
+        :return: None
+        """
         self.num_generations = num_generations
         self.early_stop = early_stop
         self.children_percent = children_percent
 
     def get_avg_score(self) -> float:
+        """
+        Calculate and return the average score of the current population.
+
+        :return: аverage score of the population.
+        """
         avg = 0
         for individ in self.population:
             avg += individ['score']
@@ -26,6 +57,11 @@ class GaData:
         return avg
 
     def update(self) -> None:
+        """
+        Update the GaData instance with information about the current generation.
+
+        :return: None
+        """
         if not self.population.is_sorted:
             self.population.sort_by_dict()
 
