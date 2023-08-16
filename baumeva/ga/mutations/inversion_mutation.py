@@ -4,7 +4,7 @@ from .base_combinatory_mutation import BaseCombinatoryMutation
 
 class InversionMutation(BaseCombinatoryMutation):
 
-    def get_mutation(self, child):
+    def get_mutation(self, child: dict) -> dict:
 
         idx_segment = sample(range(0, len(child['genotype'])), 2)
         idx_segment.sort()

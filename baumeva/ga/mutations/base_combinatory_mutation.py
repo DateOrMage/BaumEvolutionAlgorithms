@@ -33,7 +33,7 @@ class BaseCombinatoryMutation(BaseMutation):
             return False
 
     @abstractmethod
-    def get_mutation(self, child):
+    def get_mutation(self, child: dict) -> dict:
         pass
 
     def execute(self, ga_data: GaData) -> None:
