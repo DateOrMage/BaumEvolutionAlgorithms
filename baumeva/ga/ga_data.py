@@ -13,12 +13,10 @@ class GaData:
     historical_worst: list = []
     best_solution: dict = None
 
-    def __init__(self, num_generations: int, children_percent: float = 0.9, transfer_parents: str = 'best',
-                 early_stop: int = 10) -> None:
+    def __init__(self, num_generations: int, children_percent: float = 0.9, early_stop: int = 10) -> None:
         self.num_generations = num_generations
         self.early_stop = early_stop
         self.children_percent = children_percent
-        self.transfer_parents = transfer_parents
 
     def get_avg_score(self) -> float:
         avg = 0

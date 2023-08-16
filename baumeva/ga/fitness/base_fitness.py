@@ -70,6 +70,7 @@ class BaseFitness(ABC):
         :return: None
         """
         for individ in data.population:
-            individ['obj_score'], individ['score'] = self.get_scores(genotype=individ['genotype'],
-                                                                     idx_generation=data.idx_generation)
+            if individ['score'] is None:
+                individ['obj_score'], individ['score'] = self.get_scores(genotype=individ['genotype'],
+                                                                         idx_generation=data.idx_generation)
 
