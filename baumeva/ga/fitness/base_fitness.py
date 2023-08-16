@@ -27,7 +27,6 @@ class BaseFitness(ABC):
                                used for conditional optimization.
                                Example: Dynamic([(my_conditional_func_1, 'inequal'), (my_conditional_func_2, 'equal)]).
                                Default: None.
-
         :return: None
         """
 

@@ -4,16 +4,37 @@ from baumeva.ga import GaData
 
 
 class OrderCrossover(BaseCrossover):
+    """
+    A class for implementing order crossover in a genetic algorithm.
+    Inherits from BaseCrossover.
+    """
     def __init__(self) -> None:
+        """
+        Initialize the OrderCrossover instance.
+
+        :return: None
+        """
         super().__init__()
         self.len_individ = None
 
     def get_idx_segment(self) -> list:
+        """
+        Get the indices for the crossover segment to change.
+
+        :return: A list containing the indices of the crossover segment.
+        """
         idx_segment = sample(range(1, self.len_individ), 2)
         idx_segment.sort()
         return idx_segment
 
     def get_children(self, *parents_data: tuple, ga_data: GaData) -> tuple:
+        """
+        Generate offspring using order crossover.
+
+        :param parents_data: tuple containing genotypes of parent individuals.
+        :param ga_data: GaData instance containing population and related data.
+        :return: A tuple containing generated offspring individuals.
+        """
 
         child_1 = ga_data.population.get_empty_individ()
         child_2 = ga_data.population.get_empty_individ()
@@ -40,6 +61,12 @@ class OrderCrossover(BaseCrossover):
             return child_1, child_2
 
     def execute(self, ga_data: GaData) -> None:
+        """
+        Execute the order crossover operation.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: None
+        """
         super().execute(ga_data)
         self.len_individ = len(ga_data.population[0]['genotype'])
         for i in range(0, int(len(ga_data.parents)), 2):

@@ -21,6 +21,12 @@ class BalancedSelection(BaseSelection):
         pass
 
     def add_probabilities(self, ga_data: GaData):
+        """
+        Calculate and store selection probabilities based on individuals' scores.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: None
+        """
         sum_scores = sum(ind[self.score_type] for ind in ga_data.population)
         proportional = 0
 
@@ -29,11 +35,22 @@ class BalancedSelection(BaseSelection):
             self.selection_scores.append(proportional)
 
     def get_index(self):
+        """
+        Get the index of a selected individual using proportional selection.
+
+        :return: The index of the selected individual.
+        """
         rand_value = random()
         idx = min(range(len(self.selection_scores)), key=lambda i: abs(self.selection_scores[i] - rand_value))
         return idx if rand_value >= self.selection_scores[idx] else idx - 1
 
     def balanced_selection(self, ga_data: GaData):
+        """
+        Perform balanced selection to choose parents for crossover.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: None
+        """
         total_num_parents = int(ga_data.children_percent * ga_data.population.num_individ)
 
         for _ in range(total_num_parents):
@@ -46,6 +63,12 @@ class BalancedSelection(BaseSelection):
             ga_data.parents.extend(deepcopy(ga_data.population[idx]) for idx in idxs)
 
     def execute(self, ga_data: GaData) -> None:
+        """
+        Execute the balanced selection operation.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: None
+        """
         super().execute(ga_data)
         self.add_probabilities(ga_data)
         self.balanced_selection(ga_data)
