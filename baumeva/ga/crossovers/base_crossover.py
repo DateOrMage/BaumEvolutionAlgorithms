@@ -6,14 +6,12 @@ class BaseCrossover(ABC):
     """
     Abstract class for implementing crossover operations in a genetic algorithm.
     """
-    def __init__(self, num_offsprings: int = 2) -> None:
+    def __init__(self) -> None:
         """
         Initialize the BaseCrossover instance.
-
-        :param num_offsprings: the number of offspring individuals to generate (default: 2).
         :return: None
         """
-        self.num_offsprings = num_offsprings
+        self.num_offsprings: int = 1
 
     def execute(self, ga_data: GaData) -> None:
         """

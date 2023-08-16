@@ -26,7 +26,7 @@ class TournamentSelection(BaseSelection):
         :param num_individ: The number of individuals in the population.
         :return: None
         """
-        if self.tournament_size < 2 or self.tournament_size > num_individ:
+        if self.tournament_size < 2 or self.tournament_size >= num_individ:
             raise Exception(f'Size of tournament must be >= 2 and <= number of individuals: '
                             f'{num_individ}, but was given: {self.tournament_size}')
 
@@ -42,7 +42,7 @@ class TournamentSelection(BaseSelection):
         best = ga_data.population[tournament[0]]
         for idx in tournament[1:]:
             if ga_data.population[idx]['score'] > best['score']:
-                best = deepcopy(ga_data.population[idx])
+                best = ga_data.population[idx]
         return best
 
     def tournament(self, ga_data: GaData) -> None:
@@ -56,13 +56,14 @@ class TournamentSelection(BaseSelection):
         idx_total = list(range(len(ga_data.population)))
         total_num_parents = int(ga_data.children_percent*ga_data.population.num_individ)
         for i in range(total_num_parents):
-            if len(idx_total) >= self.tournament_size:
+            parents_pair = []
+            while len(parents_pair) < 2:
                 tournament = sample(idx_total, self.tournament_size)
-            else:
-                tournament = idx_total
-            best = self.get_best(tournament, ga_data)
-            idx_total.remove(best['idx_individ'])
-            ga_data.parents.append(best)
+                best = self.get_best(tournament, ga_data)
+                if len(parents_pair) == 0 or best['idx_individ'] != parents_pair[0]['idx_individ']:
+                    parents_pair.append(best)
+
+            ga_data.parents.extend(deepcopy(parent) for parent in parents_pair)
 
     def execute(self, ga_data: GaData) -> None:
         """
