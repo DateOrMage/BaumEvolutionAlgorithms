@@ -10,6 +10,7 @@ class BalancedSelection(BaseSelection):
     Inherits from BaseSelection.
     """
     score_type = 'score'
+    selection_scores = [0]
 
     def __init__(self):
         """
@@ -20,30 +21,29 @@ class BalancedSelection(BaseSelection):
         pass
 
     def add_probabilities(self, ga_data: GaData):
-        sum_scores = 0
-        for ind in ga_data.population:
-            sum_scores += ind[self.score_type]
-        for ind in ga_data.population:
-            ind['selection_score'] = ind[self.score_type] / sum_scores
+        sum_scores = sum(ind[self.score_type] for ind in ga_data.population)
+        proportional = 0
 
-    @staticmethod
-    def balanced_selection(ga_data: GaData):
+        for ind in ga_data.population:
+            proportional += ind[self.score_type] / sum_scores
+            self.selection_scores.append(proportional)
+
+    def get_index(self):
+        rand_value = random()
+        idx = min(range(len(self.selection_scores)), key=lambda i: abs(self.selection_scores[i] - rand_value))
+        return idx if rand_value >= self.selection_scores[idx] else idx - 1
+
+    def balanced_selection(self, ga_data: GaData):
         total_num_parents = int(ga_data.children_percent * ga_data.population.num_individ)
-        avg_step = 1 / (ga_data.population.num_individ - 1)
-        for _ in range(total_num_parents):
-            rand_value = random()
-            idx = int(rand_value / avg_step)
-            while True:
-                if rand_value >= ga_data.population[idx]['selection_score']:
-                    if rand_value <= ga_data.population[idx + 1]['selection_score'] and \
-                                        ga_data.population[idx] not in ga_data.parents:
-                        ga_data.parents.append(deepcopy(ga_data.population[idx]))
-                        break
-                    else:
-                        idx += 1
-                else:
-                    idx -= 1
 
+        for _ in range(total_num_parents):
+            idxs = []
+            while len(idxs) < 2:
+                idx = self.get_index()
+                if len(idxs) == 0 or idx != idxs[-1]:
+                    idxs.append(idx)
+
+            ga_data.parents.extend(deepcopy(ga_data.population[idx]) for idx in idxs)
 
     def execute(self, ga_data: GaData) -> None:
         super().execute(ga_data)

@@ -20,7 +20,8 @@ class RankedSelection(BalancedSelection):
         """
         pass
 
-    def add_probabilities(self, ga_data: GaData):
+    @staticmethod
+    def add_ranks(ga_data: GaData):
         ga_data.population.sort_by_dict()
         prev_score = -1
         count = 1
@@ -39,9 +40,7 @@ class RankedSelection(BalancedSelection):
             prev_score = ga_data.population[idx]['score']
 
         ga_data.population.sort_by_dict(key_dict='idx_individ')
-        super().add_probabilities()
 
     def execute(self, ga_data: GaData) -> None:
+        self.add_ranks(ga_data)
         super().execute(ga_data)
-        self.add_probabilities(ga_data)
-        self.balanced_selection(ga_data)
