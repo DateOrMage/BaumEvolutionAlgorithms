@@ -4,8 +4,8 @@ from baumeva.ga import GaData
 
 
 class OrderCrossover(BaseCrossover):
-    def __init__(self, num_offsprings: int = 2) -> None:
-        super().__init__(num_offsprings=num_offsprings)
+    def __init__(self) -> None:
+        super().__init__()
         self.len_individ = None
 
     def get_idx_segment(self) -> list:
@@ -42,9 +42,9 @@ class OrderCrossover(BaseCrossover):
     def execute(self, ga_data: GaData) -> None:
         super().execute(ga_data)
         self.len_individ = len(ga_data.population[0]['genotype'])
-        for i in range(int(len(ga_data.parents)/2)):
+        for i in range(0, int(len(ga_data.parents)), 2):
             parent_1 = ga_data.parents[i]['genotype']
-            parent_2 = ga_data.parents[-i-1]['genotype']
+            parent_2 = ga_data.parents[i+1]['genotype']
             pair_children = self.get_children(parent_1, parent_2, ga_data=ga_data)
             for child in pair_children:
                 ga_data.children.append(child)
