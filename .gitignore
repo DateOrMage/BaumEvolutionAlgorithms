@@ -7,3 +7,5 @@
 /venv
 /dist/
 /baumeva.egg-info/
+*.pyc
+.DS_Store
