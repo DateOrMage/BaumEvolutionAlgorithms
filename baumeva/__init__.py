@@ -1,7 +1,7 @@
 # author: Aleksei
 
 # version
-__version__ = '0.2.5'
+__version__ = '0.3.0'
 
 from .ga import GA
 from .ga import Dynamic
