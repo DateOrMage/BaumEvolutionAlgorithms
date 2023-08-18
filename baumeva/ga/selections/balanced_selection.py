@@ -27,6 +27,7 @@ class BalancedSelection(BaseSelection):
         :param ga_data: GaData instance containing population and related data.
         :return: None
         """
+        self.selection_scores = [0]
         sum_scores = sum(ind[self.score_type] for ind in ga_data.population)
         proportional = 0
 
