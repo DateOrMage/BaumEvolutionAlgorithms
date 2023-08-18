@@ -1,7 +1,7 @@
 # author: Aleksei
 
 # version
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 from .ga import GA
 from .ga import Dynamic
@@ -12,4 +12,5 @@ from .ga import BaseFitness, HyperbolaFitness
 from .ga import BaseSelection, TournamentSelection, BalancedSelection, RankedSelection
 from .ga import BaseCrossover, OrderCrossover
 from .ga import BaseMutation, BaseCombinatoryMutation, InversionMutation, SwapMutation, MovementMutation, ShiftMutation
+from .combinatory_ga import CombinatoryGA
 
