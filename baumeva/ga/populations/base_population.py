@@ -7,6 +7,7 @@ class BasePopulation(ABC, list):
     Abstract class for representing a population in a genetic algorithm.
     """
     is_sorted: bool = False
+    is_phenotype: bool = False
     num_individ: int = None
     gens: tuple = None
     input_population: List[list] = None
@@ -85,3 +86,19 @@ class BasePopulation(ABC, list):
             return dict.fromkeys(self[0].keys())
         else:
             return None
+
+    def is_duplicate(self, array: list = None) -> bool:
+        """
+        Method for checking duplicate individuals in array.
+        :param array: list of individuals with 'genotype';
+        :return: bool.
+        """
+        if array is None:
+            array = self
+        num_ind = len(array)
+
+        if len(set(tuple(ind['genotype']) for ind in array)) < num_ind:
+            return True
+        else:
+            return False
+

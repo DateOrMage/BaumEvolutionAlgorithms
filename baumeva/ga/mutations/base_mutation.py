@@ -8,7 +8,7 @@ class BaseMutation(ABC):
     Abstract class for implementing mutation operations in a genetic algorithm.
     """
 
-    def __init__(self, mutation_lvl: Union[str, float] = 'normal'):
+    def __init__(self, mutation_lvl: Union[str, float] = 'normal') -> None:
         """
         Initialize the BaseMutation instance.
 

@@ -40,9 +40,9 @@ def index_to_binary(value: int, num_bits: int, is_graycode=False):
 
 def get_index_from_gray(gray_value: int):
     """
-
+    Get index of point from gray value.
     :param gray_value: integer
-    :return:
+    :return: index of point
     """
     real_value = 0
     while gray_value > 0:
