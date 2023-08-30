@@ -36,9 +36,37 @@ class NewGeneration:
         :return: None
         """
         if self.transfer_parents == 'best':
-            ga_data.children.extend(ga_data.population[-num_elites-1:-1])
+            elites = ga_data.population[-num_elites - 1:]
+            if ga_data.population.is_duplicate(elites):
+                loop_counter = 0
+                z_counter = 0
+                while ga_data.population.is_duplicate(elites):
+                    break_out_loop = False
+                    for i in range(1, len(elites)):
+                        for j in range(1, len(elites) - (i-1)):
+                            if elites[-i]['genotype'] == elites[-i-j]['genotype']:
+                                del elites[-i-j]
+                                break_out_loop = True
+                                break
+                        if break_out_loop:
+                            break
+
+                    z_counter += 1
+                    elites.insert(0, ga_data.population[-num_elites-1-z_counter])
+                    loop_counter += 1
+                    if loop_counter >= len(ga_data.children):
+                        break
         else:
-            ga_data.children.extend(sample(ga_data.population[:-1], num_elites))
+            elites = sample(ga_data.population[:-1], num_elites)
+            loop_counter = 0
+            while ga_data.population.is_duplicate(elites):
+                elites = sample(ga_data.population[:-1], num_elites)
+                loop_counter += 1
+                if loop_counter >= len(ga_data.children):
+                    break
+            elites.append(ga_data.population[-1])
+
+        ga_data.children.extend(elites)
 
     def execute(self, ga_data: GaData) -> None:
         """
@@ -47,15 +75,15 @@ class NewGeneration:
         :param ga_data: GaData instance containing population and related data.
         :return: None
         """
-        ga_data.children.num_individ = ga_data.population.num_individ
+        ga_data.children.__dict__ = ga_data.population.__dict__
         if not ga_data.population.is_sorted:
             ga_data.population.sort_by_dict()
 
         num_elites = ga_data.population.num_individ - len(ga_data.children)
         if num_elites > 0:
             self.add_parents(ga_data, num_elites=num_elites)
-
-        ga_data.children.append(ga_data.population[-1])
+        else:
+            ga_data.children.append(ga_data.population[-1])
 
         ga_data.population = ga_data.children
-
+        ga_data.population.is_sorted = False

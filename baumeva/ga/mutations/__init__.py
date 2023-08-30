@@ -4,3 +4,4 @@ from .inversion_mutation import InversionMutation
 from .swap_mutation import SwapMutation
 from .movement_mutation import MovementMutation
 from .shift_mutation import ShiftMutation
+from .bin_string_mutation import BinStringMutation

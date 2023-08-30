@@ -31,7 +31,7 @@ class GaData:
     historical_worst: list = []
     best_solution: dict = None
 
-    def __init__(self, num_generations: int, children_percent: float = 0.9, early_stop: int = 10) -> None:
+    def __init__(self, num_generations: int, children_percent: float = 0.95, early_stop: int = 10) -> None:
         """
         Initialize the GaData instance.
 
@@ -81,4 +81,3 @@ class GaData:
             self.num_generation_no_improve += 1
 
         self.idx_generation += 1
-

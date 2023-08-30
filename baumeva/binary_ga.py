@@ -1,17 +1,17 @@
 from typing import List, Callable, Union, Any
-from .ga import GaData, OrderCatPopulation, HyperbolaFitness, PenaltyFunction, TournamentSelection, OrderCrossover,\
-                MovementMutation, NewGeneration
+from .ga import GaData, BinaryPopulation, BinaryGrayPopulation, HyperbolaFitness, PenaltyFunction, TournamentSelection,\
+                OnePointCrossover, BinStringMutation, NewGeneration
 
 
-class CombinatoryGA:
+class BinaryGA:
     """
-    Class for perform combinatory genetic algorithm (categorical order combinations without repetitions).
+    Class for perform binary genetic algorithm.
     """
     def __init__(self, num_generations: int, num_individ: int, gens: tuple, obj_function: Callable,
                  obj_value: Union[int, float] = None, input_data: Any = None, penalty: PenaltyFunction = None,
-                 children_percent: float = 0.95, early_stop: int = 10, input_population: List[list] = None,
-                 tournament_size: int = 3, mutation_lvl: Union[str, float] = 'normal',
-                 transfer_parents: str = 'best') -> None:
+                 is_gray: bool = False, children_percent: float = 0.95, early_stop: int = 10,
+                 input_population: List[list] = None, tournament_size: int = 3,
+                 mutation_lvl: Union[str, float] = 'normal', transfer_parents: str = 'best') -> None:
         """
         Initialization CombinatoryGA with next parameters:
         :param num_generations: int, number of generations;
@@ -27,7 +27,8 @@ class CombinatoryGA:
         :param penalty: PenaltyFunction, default: None. Subclass of PenaltyFunction(), initialization before
                         initialization class CombinatoryGA(), used for conditional optimization.
                         Example: Dynamic([(my_conditional_func_1, 'inequal'), (my_conditional_func_2, 'equal)]);
-        :param children_percent: float, default: 0.9. Percent of children who will be in new generation;
+        :param is_gray: bool, default: False. Ability to use gray code instead of binary representation;
+        :param children_percent: float, default: 0.95. Percent of children who will be in new generation;
         :param early_stop: int, default: 10. Early stopping criteria, number of generation without improve;
         :param input_population: list[list], default: None. First generation from user;
         :param tournament_size: int, default: 3. Size of tournament, use only with selection_type="tournament";
@@ -44,6 +45,7 @@ class CombinatoryGA:
         self.obj_value = obj_value
         self.input_data = input_data
         self.penalty = penalty
+        self.is_gray = is_gray
         self.children_percent = children_percent
         self.early_stop = early_stop
         self.input_population = input_population
@@ -59,14 +61,18 @@ class CombinatoryGA:
         # init GaData & Population
         ga_data = GaData(num_generations=self.num_generations, children_percent=self.children_percent,
                          early_stop=self.early_stop)
-        population = OrderCatPopulation()
+        if self.is_gray:
+            population = BinaryGrayPopulation()
+        else:
+            population = BinaryPopulation()
+
         population.set_params(num_individ=self.num_individ, gens=self.gens, input_population=self.input_population)
         # init fitness func, selection, crossover, mutation, new generation
         fitness_func = HyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
                                         input_data=self.input_data, penalty=self.penalty)
         selection = TournamentSelection(tournament_size=self.tournament_size)
-        cross = OrderCrossover()
-        mutation = MovementMutation(mutation_lvl=self.mutation_lvl)
+        cross = OnePointCrossover()
+        mutation = BinStringMutation(mutation_lvl=self.mutation_lvl)
         new_generation = NewGeneration(transfer_parents=self.transfer_parents)
         # creating first generation
         population.fill()

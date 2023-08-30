@@ -61,15 +61,20 @@ class BaseFitness(ABC):
         """
         pass
 
-    def execute(self, data: GaData) -> None:
+    def execute(self, ga_data: GaData) -> None:
         """
         Calculate and assign fitness scores to individuals in the population.
 
-        :param data: GaData instance containing population and related data.
+        :param ga_data: GaData instance containing population and related data.
         :return: None
         """
-        for individ in data.population:
+        if ga_data.population.is_phenotype:
+            ga_data.population.get_phenotype()
+            ga_data.population.swap()
+
+        for individ in ga_data.population:
             if individ['score'] is None:
                 individ['obj_score'], individ['score'] = self.get_scores(genotype=individ['genotype'],
-                                                                         idx_generation=data.idx_generation)
-
+                                                                         idx_generation=ga_data.idx_generation)
+        if ga_data.population.is_phenotype:
+            ga_data.population.swap()
