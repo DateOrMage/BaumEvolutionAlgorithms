@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=65.5.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "baumeva"
+version = "0.4.0"
+authors = [{name = "Kudryavtsev Aleksei", email="vatutu@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = ["Programming Language :: Python :: 3",
+               "License :: OSI Approved :: MIT License",
+               "Operating System :: OS Independent"]
+
+[project.urls]
+"Homepage" = "https://github.com/DateOrMage/BaumEvolutionAlgorithms"
+"Bug Tracker" = "https://github.com/DateOrMage/BaumEvolutionAlgorithms/issues"
