@@ -54,21 +54,24 @@ Additionally, Baumeva offers a modular approach for those who desire more granul
 ```python
 import random
 from baumeva import GaData
-from baumeva.ga.populations import OrderCatPopulation
-from baumeva.ga.fitness import HyperbolaFitness
-from baumeva.ga.selections import TournamentSelection
-from baumeva.ga.crossovers import OrderCrossover
-from baumeva.ga.mutations import InversionMutation
+from baumeva import OrderCatPopulation
+from baumeva import HyperbolaFitness
+from baumeva import TournamentSelection
+from baumeva import OrderCrossover
+from baumeva import InversionMutation
 from baumeva import NewGeneration
 
+
 def word_distance(word):
-    return sum(c1 != c2 for c1, c2 in zip('algorithm', word))
+   return sum(c1 != c2 for c1, c2 in zip('algorithm', word))
+
 
 def string_generator():
-    chars = list('algorithm')
-    while True:
-        random.shuffle(chars)
-        yield ''.join(chars)
+   chars = list('algorithm')
+   while True:
+      random.shuffle(chars)
+      yield ''.join(chars)
+
 
 generated_population = [next(string_generator()) for _ in range(50)]
 
@@ -82,23 +85,23 @@ fitness_func.execute(ga_data=ga_data)
 ga_data.update()
 
 for i in range(ga_data.num_generations):
-    selection = TournamentSelection(tournament_size=5)
-    selection.execute(ga_data)
+   selection = TournamentSelection(tournament_size=5)
+   selection.execute(ga_data)
 
-    order_cross = OrderCrossover()
-    order_cross.execute(ga_data)
+   order_cross = OrderCrossover()
+   order_cross.execute(ga_data)
 
-    bcm = InversionMutation(0.15)
-    bcm.execute(ga_data)
+   bcm = InversionMutation(0.15)
+   bcm.execute(ga_data)
 
-    NewGeneration('best').execute(ga_data)
+   NewGeneration('best').execute(ga_data)
 
-    fitness_func.execute(ga_data=ga_data)
-    ga_data.update()
+   fitness_func.execute(ga_data=ga_data)
+   ga_data.update()
 
-    if ga_data.num_generation_no_improve >= ga_data.early_stop:
-        print(f'Early stopping: {i}')
-        break
+   if ga_data.num_generation_no_improve >= ga_data.early_stop:
+      print(f'Early stopping: {i}')
+      break
 
 print(f"Result: {ga_data.best_solution} ")
 ```

@@ -2,7 +2,7 @@ import random
 from typing import List, Union, Callable, Optional, Any
 from baumeva.ga.support_funcs.support_functions import get_real_number_of_points, index_to_binary,\
      get_odd_num_children, get_result_mutation, sort_list_with_index, get_balanced_selection, get_index_from_gray
-from baumeva.ga.penalties.penalty_methods import Dynamic
+from baumeva.ga import Dynamic
 
 
 class GA:

@@ -16,7 +16,20 @@ if __name__ == '__main__':
     setup(
         name='baumeva',
         version=baumeva.__version__,
-        # package_dir={'': 'baumeva'},
         packages=find_packages(),
-        description='Python library for perform evolutional algorithm',
+        description='Python library for perform evolution algorithm',
+        license='MIT',
+        author='Aleksei Kudryavtsev',
+        author_email='vatutu@gmail.com',
+        url='https://github.com/DateOrMage/BaumEvolutionAlgorithms',
+        keywords=['genetic', 'algorithm', 'optimization', 'crossover', 'population', 'selection', 'mutation', 'fitness',
+                  'evolutionary', 'adaptive', 'chromosome', 'genome', 'binary'],
+        classifiers=["Programming Language :: Python :: 3",
+                     "Programming Language :: Python :: 3.7",
+                     "Programming Language :: Python :: 3.8",
+                     "Programming Language :: Python :: 3.9",
+                     "Programming Language :: Python :: 3.10",
+                     "Programming Language :: Python :: 3.11",
+                     "License :: OSI Approved :: MIT License",
+                     "Operating System :: OS Independent"]
     )

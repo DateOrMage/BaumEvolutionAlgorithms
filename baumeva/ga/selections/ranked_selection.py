@@ -1,5 +1,3 @@
-from random import random
-from copy import deepcopy
 from .balanced_selection import BalancedSelection
 from baumeva.ga import GaData
 

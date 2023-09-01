@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Union, Callable, List, Any
-from baumeva.ga.penalties.penalty_methods import PenaltyFunction
+from baumeva.ga import PenaltyFunction
 from baumeva.ga.ga_data import GaData
 
 
