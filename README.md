@@ -52,6 +52,7 @@ The `obj_value` defines the target or optimal value the algorithm aims to achiev
 Additionally, Baumeva offers a modular approach for those who desire more granularity. Beyond the convenience of the `BinaryGA` and `CombinatoryGA` classes, users have the flexibility to assemble a genetic algorithm tailored to their needs. By directly declaring specific classes, you can handpick from a diverse range of mutation, selection and crossover methods, crafting a customized genetic algorithm.
 
 ```python
+import random
 from baumeva import GaData
 from baumeva.ga.populations import OrderCatPopulation
 from baumeva.ga.fitness import HyperbolaFitness
@@ -62,6 +63,14 @@ from baumeva import NewGeneration
 
 def word_distance(word):
     return sum(c1 != c2 for c1, c2 in zip('algorithm', word))
+
+def string_generator():
+    chars = list('algorithm')
+    while True:
+        random.shuffle(chars)
+        yield ''.join(chars)
+
+generated_population = [next(string_generator()) for _ in range(50)]
 
 ga_data = GaData(num_generations=100, early_stop=15)
 ocp = OrderCatPopulation()
