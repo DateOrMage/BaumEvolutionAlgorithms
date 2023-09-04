@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="https://github.com/DateOrMage/BaumEvolutionAlgorithms/blob/master/logo.png">
+</div>
+
 # BaumEvA - Bauman Evolution Algorithm
 
 BaumEvA is an advanced genetic algorithm crafted in Python. It's designed to work with both binary and combinatorial data types, providing a comprehensive suite of tools for optimization and search tasks. Baumeva offers a variety of selection, crossover, mutation, and parent selection mechanisms.
@@ -14,7 +18,7 @@ pip install baumeva
 
 ### Basic Usage
 
-BaumEvA is designed for straightforward integration and usage. The library features two classes: `BinaryGA` and `CombinatoryGA`. These classes come equipped with predefined methods, allowing users to effortlessly engage with both binary and combinatorial genetic algorithms.
+BaumEvA is designed for easy integration and usage. The library features two classes: `BinaryGA` and `CombinatoryGA`. These classes come equipped with predefined methods, allowing users to effortlessly engage with both binary and combinatorial genetic algorithms.
 
 ```python
 from baumeva import BinaryGA
@@ -37,7 +41,7 @@ binary_ga = BinaryGA(num_generations=100,
 data = binary_ga.optimize()
 ```
 
-The `num_generations` specifies the total number of generations the genetic algorithm should run for. In the example given `num_generations=100` means the algorithm will iterate through 100 generations.
+The `num_generations` specifies the total number of generations. In the example given `num_generations=100` means the algorithm will iterate through 100 generations.
 
 The `num_individ` dictates the total number of individuals in a population. In the example given num_individ=100 implies there are 100 individuals in a single generation.
 
@@ -45,11 +49,11 @@ The `gens` defines the range and precision for each gene in the binary represent
 
 The `obj_function` describes the objective function that evaluates the object score of each individual. In the example given `obj_function=func_grivanka` indicates the func_grivanka function will be used to determine the object score and subsequently fitness score of the individuals.
 
-The `obj_value` defines the target or optimal value the algorithm aims to achieve or get as close as possible to, using the obj_function. In the example given `obj_value=0` means the genetic algorithm will aim to find an individual whose object function value is as close to 0 as possible.
+The `obj_value` defines the target or optimal value the algorithm aims to achieve or get as close as possible to, using the `obj_function`. In the example given `obj_value=0` means the genetic algorithm will aim to find an individual whose object function value is as close to 0 as possible.
 
 ### Advanced Usage
 
-Additionally, Baumeva offers a modular approach for those who desire more granularity. Beyond the convenience of the `BinaryGA` and `CombinatoryGA` classes, users have the flexibility to assemble a genetic algorithm tailored to their needs. By directly declaring specific classes, you can handpick from a diverse range of mutation, selection and crossover methods, crafting a customized genetic algorithm.
+Additionally, Baumeva offers a modular approach for those who desire more customization. Beyond the convenience of the `BinaryGA` and `CombinatoryGA` classes, users have the flexibility to assemble a genetic algorithm. By directly declaring specific classes, you can handpick from a diverse range of mutation, selection and crossover methods, crafting a customized genetic algorithm.
 
 ```python
 import random
@@ -110,9 +114,9 @@ This example demonstrates the use of the BaumEvA library to search for the word 
 
 ### Components Used:
 
-1. **GaData**: Configures the genetic algorithm's data parameters like the number of generations and an early stopping criterion.
-2. **OrderCatPopulation**: Represents the population structure for this task. In this case we set the first population manually using `generated_population` - a list consisting of words anagrams to 'algorithm'.
-3. **HyperbolaFitness**: Fitness function, where the objective is the word distance between the evolved string and the target string 'algorithm'.
+1. **GaData**: Class for holding and managing data related to a genetic algorithm run.
+2. **OrderCatPopulation**: Class for representing ordered categorical population in a genetic algorithm. In this case we set the first population manually using `generated_population` - a list consisting of words anagrams to 'algorithm'.
+3. **HyperbolaFitness**: Class for calculating fitness value using the hyperbola approach. Object function is specified as a parameter - levenstein distance between the evolved string and the target string 'algorithm'.
 4. **TournamentSelection**: Selection method used, which operates on tournament-based selection logic.
 5. **OrderCrossover**: The crossover mechanism used in the genetic algorithm.
 6. **InversionMutation**: Mutation method, introducing randomness in the population.
@@ -125,7 +129,7 @@ This example demonstrates the use of the BaumEvA library to search for the word 
 3. In each generation:
    - The tournament-based selection method is applied.
    - Pairs of individuals undergo crossover using the order-based crossover mechanism.
-   - Mutation is applied with a probability to introduce variability.
+   - Mutation is applied to individuals with some probability.
    - A new generation is created based on the best individuals.
    - Fitness is recalculated for the new generation.
 4. The genetic algorithm either runs for a predefined number of generations or stops early if there hasn't been an improvement in the population fitness for a specified number of generations.
