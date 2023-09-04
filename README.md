@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="[https://github.com/DateOrMage/BaumEvolutionAlgorithms/blob/master/logo.png](https://github.com/DateOrMage/BaumEvolutionAlgorithms/blob/master/logo.png)">
+  <img src="https://github.com/DateOrMage/BaumEvolutionAlgorithms/raw/master/logo.svg">
 </div>
 
 # BaumEvA - Bauman Evolution Algorithm
