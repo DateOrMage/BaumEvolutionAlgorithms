@@ -13,11 +13,17 @@ def read_pipenv_dependencies(fname):
 
 
 if __name__ == '__main__':
+
+    with open("README.md", encoding='utf-8') as f:
+        long_description = f.read()
+
     setup(
         name='baumeva',
         version=baumeva.__version__,
         packages=find_packages(),
-        description='Python library for perform evolution algorithm',
+        description='Library for the solution of optimization problems with evolution algorithms',
+        long_description=long_description,
+        long_description_content_type='text/markdown',
         license='MIT',
         author='Aleksei Kudryavtsev',
         author_email='vatutu@gmail.com',

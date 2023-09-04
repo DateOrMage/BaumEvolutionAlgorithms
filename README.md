@@ -67,14 +67,14 @@ from baumeva import NewGeneration
 
 
 def word_distance(word):
-   return sum(c1 != c2 for c1, c2 in zip('algorithm', word))
+    return sum(c1 != c2 for c1, c2 in zip('algorithm', word))
 
 
 def string_generator():
-   chars = list('algorithm')
-   while True:
-      random.shuffle(chars)
-      yield ''.join(chars)
+    chars = list('algorithm')
+    while True:
+        random.shuffle(chars)
+        yield ''.join(chars)
 
 
 generated_population = [next(string_generator()) for _ in range(50)]
@@ -89,23 +89,23 @@ fitness_func.execute(ga_data=ga_data)
 ga_data.update()
 
 for i in range(ga_data.num_generations):
-   selection = TournamentSelection(tournament_size=5)
-   selection.execute(ga_data)
+    selection = TournamentSelection(tournament_size=5)
+    selection.execute(ga_data)
 
-   order_cross = OrderCrossover()
-   order_cross.execute(ga_data)
+    order_cross = OrderCrossover()
+    order_cross.execute(ga_data)
 
-   bcm = InversionMutation(0.15)
-   bcm.execute(ga_data)
+    bcm = InversionMutation(0.15)
+    bcm.execute(ga_data)
 
-   NewGeneration('best').execute(ga_data)
+    NewGeneration('best').execute(ga_data)
 
-   fitness_func.execute(ga_data=ga_data)
-   ga_data.update()
+    fitness_func.execute(ga_data=ga_data)
+    ga_data.update()
 
-   if ga_data.num_generation_no_improve >= ga_data.early_stop:
-      print(f'Early stopping: {i}')
-      break
+    if ga_data.num_generation_no_improve >= ga_data.early_stop:
+        print(f'Early stopping: {i}')
+        break
 
 print(f"Result: {ga_data.best_solution} ")
 ```
@@ -127,11 +127,11 @@ This example demonstrates the use of the BaumEvA library to search for the word 
 1. The genetic algorithm data parameters are initialized, and the initial population is set and filled.
 2. The fitness of each individual in the population is calculated based on its distance from the target word 'algorithm'.
 3. In each generation:
-   - The tournament-based selection method is applied.
-   - Pairs of individuals undergo crossover using the order-based crossover mechanism.
-   - Mutation is applied to individuals with some probability.
-   - A new generation is created based on the best individuals.
-   - Fitness is recalculated for the new generation.
+    - The tournament-based selection method is applied.
+    - Pairs of individuals undergo crossover using the order-based crossover mechanism.
+    - Mutation is applied to individuals with some probability.
+    - A new generation is created based on the best individuals.
+    - Fitness is recalculated for the new generation.
 4. The genetic algorithm either runs for a predefined number of generations or stops early if there hasn't been an improvement in the population fitness for a specified number of generations.
 5. The result is the closest approximation found to the word 'algorithm'.
 
