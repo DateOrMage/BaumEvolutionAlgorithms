@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=![](https://raw.githubusercontent.com/DateOrMage/BaumEvolutionAlgorithms/f3b6ec56ff5fd8271ba37f293de2df3337ba27bd/logo.svg)>
+  <img src="https://raw.githubusercontent.com/DateOrMage/BaumEvolutionAlgorithms/f3b6ec56ff5fd8271ba37f293de2df3337ba27bd/logo.svg">
 </div>
 
 # BaumEvA - Bauman Evolution Algorithm
