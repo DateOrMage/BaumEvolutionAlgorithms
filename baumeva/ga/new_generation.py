@@ -52,6 +52,9 @@ class NewGeneration:
                             break
 
                     z_counter += 1
+                    if -num_elites-1-z_counter < 0:
+                        elites[0:0] = sample(ga_data.population, num_elites + 1 - len(elites))
+                        break
                     elites.insert(0, ga_data.population[-num_elites-1-z_counter])
                     loop_counter += 1
                     if loop_counter >= len(ga_data.children):
