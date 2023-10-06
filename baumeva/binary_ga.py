@@ -16,9 +16,8 @@ class BinaryGA:
         Initialization CombinatoryGA with next parameters:
         :param num_generations: int, number of generations;
         :param num_individ: int, number of individuals in generation (size of population);
-        :param gens: tuple, tuple of 3 integer value, example: (0, 9, 10), 0 - first categorical value,
-                     9 - last categorical value, step between categorical is 1 (const), 10 - number of categorical
-                     values in every individ, u can use value in range 9-0+1 = 10;
+        :param gens: tuple, tuple of 3 integer value, example: (0, 7, 1), 0 - min value,
+                     7 - maximum value, 1 - step;
         :param obj_function: Callable, object function with 1 or 2 arguments, my_func(gens: list) or
                              my_func(input_data: Any, gens: list);
         :param obj_value: int | float, default: None. If object value exists, GA will optimize to the value,
@@ -94,6 +93,7 @@ class BinaryGA:
                 print(f'Early stopping: {i}')
                 print('Best solution:')
                 print(f'\tgenotype: {ga_data.best_solution["genotype"]}')
+                print(f'\tphenotype: {ga_data.best_solution["phenotype"]}')
                 print(f'\tfitness score: {ga_data.best_solution["score"]}')
                 print(f'\tobjective score: {ga_data.best_solution["obj_score"]}')
                 break
