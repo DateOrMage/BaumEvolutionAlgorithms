@@ -41,7 +41,10 @@ binary_ga = BinaryGA(num_generations=100,
                      num_individ=100,
                      gens=((-16, 16, 0.01), (-16, 16, 0.01)),
                      obj_function=func_grivanka,
-                     obj_value=0)
+                     obj_value=0,
+                     is_gray=True,
+                     mutation_lvl=0.35,
+                     early_stop=None)
 ga_data = binary_ga.optimize()
 ```
 
@@ -54,7 +57,13 @@ In the example given gens=((-16, 16, 0.01), (-16, 16, 0.01)) signifies two genes
 
 The `obj_function` specifies the objective function that evaluates the object score of each individual. 
 
-The `obj_value` defines the target or optimal value the algorithm aims to achieve or get as close as possible to. 
+The `obj_value` defines the target or optimal value the algorithm aims to achieve or get as close as possible to.
+
+The `is_gray` uses gray code to convert to binary representation, default: False.
+
+The `mutation_lvl` is probability of mutation of each bit; float or string value, default: 'normal' meaning a probability equal to 1/s, where s is the length of the binary string.
+
+The `early_stop` determines the number of generations N. If the best individual is not updated within N generations in a row, then the algorithm stops; int or None, default: 10.
 
 You can get the best solution calling `ga_data.best_solution`.
 

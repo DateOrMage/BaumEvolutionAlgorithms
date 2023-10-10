@@ -9,9 +9,9 @@ class CombinatoryGA:
     """
     def __init__(self, num_generations: int, num_individ: int, gens: tuple, obj_function: Callable,
                  obj_value: Union[int, float] = None, input_data: Any = None, penalty: PenaltyFunction = None,
-                 children_percent: float = 0.95, early_stop: int = 10, input_population: List[list] = None,
+                 children_percent: float = 0.95, early_stop: Union[int, None] = 10, input_population: List[list] = None,
                  tournament_size: int = 3, mutation_lvl: Union[str, float] = 'normal',
-                 transfer_parents: str = 'best') -> None:
+                 transfer_parents: str = 'best', is_print: bool = True) -> None:
         """
         Initialization CombinatoryGA with next parameters:
         :param num_generations: int, number of generations;
@@ -50,6 +50,7 @@ class CombinatoryGA:
         self.tournament_size = tournament_size
         self.mutation_lvl = mutation_lvl
         self.transfer_parents = transfer_parents
+        self.is_print = is_print
 
     def optimize(self) -> GaData:
         """
@@ -83,12 +84,14 @@ class CombinatoryGA:
             fitness_func.execute(ga_data)
             ga_data.update()
 
-            if ga_data.num_generation_no_improve >= ga_data.early_stop:
-                print('|=============================================================================================|')
-                print(f'Early stopping: {i}')
-                print('Best solution:')
-                print(f'\tgenotype: {ga_data.best_solution["genotype"]}')
-                print(f'\tfitness score: {ga_data.best_solution["score"]}')
-                print(f'\tobjective score: {ga_data.best_solution["obj_score"]}')
-                break
+            if ga_data.early_stop is not None:
+                if ga_data.num_generation_no_improve > ga_data.early_stop:
+                    if self.is_print:
+                        print('|' + '='*85 + '|')
+                        print(f'Early stopping: {i}')
+                        print('Best solution:')
+                        print(f'\tgenotype: {ga_data.best_solution["genotype"]}')
+                        print(f'\tfitness score: {ga_data.best_solution["score"]}')
+                        print(f'\tobjective score: {ga_data.best_solution["obj_score"]}')
+                    break
         return ga_data
