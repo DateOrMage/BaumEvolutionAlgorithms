@@ -81,3 +81,18 @@ class GaData:
             self.num_generation_no_improve += 1
 
         self.idx_generation += 1
+
+    def print_best_solution(self) -> None:
+        """
+        Method for print params of the best individ.
+        :return: None
+        """
+        print('|' + '=' * 85 + '|')
+        print(f'Index generation: {self.idx_generation-1}')
+        print('Best solution:')
+        print(f'\tindex generation: {self.best_solution["idx_generation"]}')
+        print(f'\tgenotype: {self.best_solution["genotype"]}')
+        if 'phenotype' in self.best_solution.keys():
+            print(f'\tphenotype: {self.best_solution["phenotype"]}')
+        print(f'\tfitness score: {self.best_solution["score"]}')
+        print(f'\tobjective score: {self.best_solution["obj_score"]}')

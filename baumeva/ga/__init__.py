@@ -1,7 +1,6 @@
-# from .gen_alg import GA
 from .ga_data import GaData
 from .new_generation import NewGeneration
-from .penalties.penalty_methods import PenaltyFunction, Dynamic
+from .penalties import BasePenalty, DynamicPenalty
 from .populations import BasePopulation, CatPopulation, OrderCatPopulation, BinaryPopulation, BinaryGrayPopulation
 from .fitness import BaseFitness, HyperbolaFitness
 from .selections import BaseSelection, TournamentSelection, BalancedSelection, RankedSelection

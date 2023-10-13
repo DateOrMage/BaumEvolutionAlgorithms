@@ -69,7 +69,42 @@ You can get the best solution calling `ga_data.best_solution`.
 
 There are also special class for combinatory genetic algorithm - `CombinatoryGA`. The only difference is `gens` parameter. For example: (0, 9, 10), 0 - first categorical value,
                      9 - last categorical value, step between categorical is 1 (const), 10 - number of categorical
-                     values in every individ. 
+                     values in every individ.
+
+#### Conditional optimization
+
+For conditional optimization tasks you can use same classes `BinaryGA`, `CombinatoryGA` with two additional parameters: `penalty`, `conditions`.
+
+The `penalty` is penalty function, subclass of `BasePenalty()`, initialization before
+                        initialization subclass of `BaseFitness()`, used for conditional optimization.
+
+The `conditions` is list of conditionals, 3 value can be use: 'optimize', '<=', '!='
+
+Example conditional optimization task:
+```python
+from baumeva import BinaryGA
+from baumeva.ga import DynamicPenalty
+
+def parabola_conditions(x: list) -> tuple:
+    res = -x[0]*x[0] + 9
+    condition_1 = -x[0]-3
+    condition_2 = x[0]+3
+    return res, condition_1, condition_2
+
+bin_ga_conditions = BinaryGA(num_generations=100,
+                             num_individ=100,
+                             gens=((-5, 5, 0.001),),
+                             obj_function=parabola_conditions,
+                             obj_value=0,
+                             penalty=DynamicPenalty(),
+                             conditions=['optimize', '<=', '!='],
+                             is_gray=True,
+                             mutation_lvl=0.35,
+                             early_stop=None)
+
+ga_data_conditions = bin_ga_conditions.optimize()
+```
+There is object function `parabola_conditions`, which return 3 values. The `res` is value for optimization, the `condition_1` is value less or equal 0, the `condition_2` is value not equal 0. So we have `conditions=['optimize', '<=', '!=']` and use `DynamicPenalty()`.
 
 ### Advanced Usage
 
@@ -77,7 +112,7 @@ Additionally, BaumEva offers a modular approach for those who desire more custom
 
 ```python
 from random import shuffle
-from baumeva import GaData, OrderCatPopulation, HyperbolaFitness, TournamentSelection, OrderCrossover, SwapMutation, NewGeneration
+from baumeva.ga import GaData, OrderCatPopulation, HyperbolaFitness, TournamentSelection, OrderCrossover, SwapMutation, NewGeneration
 
 def func_word(word: list) -> float:
     obj_word = 'ALGORITHM'
@@ -133,7 +168,7 @@ for i in range(ga_data.num_generations):
 print(f"Result: {ga_data.best_solution} ")
 ```
 
-This example demonstrates the use of the BaumEvA library to search for the word "ALGORITHM" using a categorical genetic algorithm.
+This example demonstrates the use of the BaumEvA library to search for the word "ALGORITHM" using a combination genetic algorithm.
 
 ### Components Used:
 
@@ -160,7 +195,7 @@ This example demonstrates the use of the BaumEvA library to search for the word 
 
 ## Documentation
 
-Still in progress. For now you can read brief description of the library classes.
+Still in progress. For now, you can read brief description of the library classes.
 
 ### BinaryGA
 Class for perform binary genetic algorithm. 
@@ -174,6 +209,7 @@ Supports the following parameters:
                           else GA will optimize to min;
 - `input_data (Any, default: None)` - argument for object function, you can pass any additional information to object function;
 - `penalty (class PenaltyFunction, default: None)` - subclass of PenaltyFunction(), used for conditional optimization;
+- `conditions (list of strings (optimizer and conditionals), default: None.)` -  3 value can be use: 'optimize', '<=', '!=';
 - `is_gray (bool, default: False)` - ability to use gray code instead of binary representation;
 - `children_percent (float, default: 0.95)` - percent of children in new generation;
 - `early_stop (int, default: 10)` - early stopping criteria, number of generation without improve;
@@ -207,20 +243,19 @@ Attributes:
 Class for creating a new generation of individuals in a genetic algorithm. Supports the following parameter:
 - `transfer_parents (str, default: 'best')` - strategy for transferring certain amount of parents to the next generation. Can be 'best' or 'random'.
 
-### PenaltyFunction
-Class for creating and calculating penalty for conditional optimization. Supports the following parameters:
- 
-- `conditional_func` - conditional function. Only 2 types of conditional: `g(x) <= 0` ('inequal') or  `h(x) == 0` ('equal').
+### DynamicPenalty
+Class for creating and calculating penalty for conditional optimization. 
+
+Only 2 types of conditional: `g(x) <= 0` or  `h(x) != 0`.
 
 Example: 
 ```python
-def my_f1(gens: list[int|float]) -> int | float: 
-    return sum(gens) - 1
-def my_f2(input_data, gens: list[int|float]) -> int | float: 
-    return max(gens) * input_data;
-conditional_func = [(my_f1, 'equal', None), (my_f2, 'inequal', input_data)]
+my_obj_func(x1, x2):
+    return x1**2 + x2**2, 1-x1+x2, x1+x2
+dp = DynamicPenalty()
+HyperbolaFitness(obj_function=my_func, obj_value=0, penalty=dp,
+                 conditions=['optimize', '<=', '!='])
 ```
-- `penalty (int or float, default: 0)` - penalty value.
 
 ### HyperbolaFitness
 Class for calculating fitness value using the hyperbola approach. Supports the following parameters:
@@ -229,8 +264,8 @@ Class for calculating fitness value using the hyperbola approach. Supports the f
 - `obj_value (int | float, default: None)` - if object value exists, GA will optimize to the value,
                           else GA will optimize to min;
 - `input_data (Any, default: None)` - argument for object function, you can pass any additional information to object function;
-- `penalty (class PenaltyFunction, default: None)` - subclass of PenaltyFunction(), used for conditional optimization;
-- 
+- `penalty (class BasePenalty, default: None)` - subclass of BasePenalty(), used for conditional optimization;
+- `conditions: (list of strings, default: None)` - 3 value can be use: 'optimize', '<=', '!='.
 ### Classes for populations
 
 - BinaryPopulation() 

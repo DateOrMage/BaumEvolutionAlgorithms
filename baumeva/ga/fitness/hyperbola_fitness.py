@@ -8,22 +8,19 @@ class HyperbolaFitness(BaseFitness):
     Inherits from BaseFitness.
     """
 
-    def get_scores(self, genotype: List[Union[int, float]], idx_generation:  int) -> tuple:
+    def get_fitness_score(self, obj_score: Union[int, float], penalty_value: Union[int, float] = 0) ->\
+            Union[int, float]:
         """
-        Calculate the fitness scores for an individual's genotype.
+        Method for calculating fitness score of individual.
 
-        :param genotype: the genotype of the individual.
-        :param idx_generation: the index of the current generation.
-        :return: a tuple containing the objective score and the calculated fitness score.
+        :param obj_score: object value of an individual.
+        :param penalty_value: fitness value of an individual.
+        :return: fitness score of the individual.
         """
-        if self.input_data:
-            obj_score = self.obj_function(self.input_data, genotype)
-        else:
-            obj_score = self.obj_function(genotype)
 
         if self.obj_value is not None:
-            score = 1.0 / (1 + abs(self.obj_value - (obj_score + self.get_penalty_value(genotype, idx_generation))))
+            score = 1.0 / (1 + abs(self.obj_value - (obj_score + penalty_value)))
         else:
-            score = -(obj_score + self.get_penalty_value(genotype, idx_generation))
+            score = -(obj_score + penalty_value)
 
-        return obj_score, score
+        return score

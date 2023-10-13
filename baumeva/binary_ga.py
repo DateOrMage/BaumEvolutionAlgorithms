@@ -1,5 +1,5 @@
 from typing import List, Callable, Union, Any
-from .ga import GaData, BinaryPopulation, BinaryGrayPopulation, HyperbolaFitness, PenaltyFunction, TournamentSelection,\
+from .ga import GaData, BinaryPopulation, BinaryGrayPopulation, HyperbolaFitness, BasePenalty, TournamentSelection,\
                 OnePointCrossover, BinStringMutation, NewGeneration
 
 
@@ -8,9 +8,9 @@ class BinaryGA:
     Class for perform binary genetic algorithm.
     """
     def __init__(self, num_generations: int, num_individ: int, gens: tuple, obj_function: Callable,
-                 obj_value: Union[int, float] = None, input_data: Any = None, penalty: PenaltyFunction = None,
-                 is_gray: bool = False, children_percent: float = 0.95, early_stop: Union[int, None] = 10,
-                 input_population: List[list] = None, tournament_size: int = 3,
+                 obj_value: Union[int, float] = None, input_data: Any = None, penalty: BasePenalty = None,
+                 conditions: list = None, is_gray: bool = False, children_percent: float = 0.95,
+                 early_stop: Union[int, None] = 10, input_population: List[list] = None, tournament_size: int = 3,
                  mutation_lvl: Union[str, float] = 'normal', transfer_parents: str = 'best',
                  is_print: bool = True) -> None:
         """
@@ -24,9 +24,15 @@ class BinaryGA:
         :param obj_value: int | float, default: None. If object value exists, GA will optimize to the value,
                           else GA will optimize to min;
         :param input_data: Any, default: None. Argument for object function;
-        :param penalty: PenaltyFunction, default: None. Subclass of PenaltyFunction(), initialization before
-                        initialization class CombinatoryGA(), used for conditional optimization.
-                        Example: Dynamic([(my_conditional_func_1, 'inequal'), (my_conditional_func_2, 'equal)]);
+        :param penalty: BasePenalty, default: None. Subclass of BasePenalty(), initialization before
+                        initialization subclass of BaseFitness(), used for conditional optimization.
+                        Example: DynamicPenalty();
+        :param conditions: list of strings (optimizer and conditionals) 3 value can be use: 'optimize', '<=', '!='.
+                           Default: None.
+                           Example: There is objective function: my_obj_func(x1, x2):
+                                                                    return x1**2 + x2**2, 1-x1+x2, x1+x2
+                                    my_obj_func returns 3 values, first value to optimize, second value must be <= 0,
+                                    third value != 0, so have conditions = ['optimize', '<=', '!=']
         :param is_gray: bool, default: False. Ability to use gray code instead of binary representation;
         :param children_percent: float, default: 0.95. Percent of children who will be in new generation;
         :param early_stop: int, default: 10. Early stopping criteria, number of generation without improve;
@@ -46,9 +52,10 @@ class BinaryGA:
         self.obj_value = obj_value
         self.input_data = input_data
         self.penalty = penalty
+        self.conditions = conditions
         self.is_gray = is_gray
         self.children_percent = children_percent
-        self.early_stop = early_stop
+        self.early_stop = early_stop if early_stop is not None else num_generations
         self.input_population = input_population
         self.tournament_size = tournament_size
         self.mutation_lvl = mutation_lvl
@@ -71,7 +78,7 @@ class BinaryGA:
         population.set_params(num_individ=self.num_individ, gens=self.gens, input_population=self.input_population)
         # init fitness func, selection, crossover, mutation, new generation
         fitness_func = HyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
-                                        input_data=self.input_data, penalty=self.penalty)
+                                        input_data=self.input_data, penalty=self.penalty, conditions=self.conditions)
         selection = TournamentSelection(tournament_size=self.tournament_size)
         cross = OnePointCrossover()
         mutation = BinStringMutation(mutation_lvl=self.mutation_lvl)
@@ -82,7 +89,7 @@ class BinaryGA:
         fitness_func.execute(ga_data=ga_data)
         ga_data.update()
         # main loop for GA perform
-        for i in range(ga_data.num_generations):
+        for i in range(1, ga_data.num_generations):
 
             selection.execute(ga_data)
             cross.execute(ga_data)
@@ -91,15 +98,9 @@ class BinaryGA:
             fitness_func.execute(ga_data)
             ga_data.update()
 
-            if ga_data.early_stop is not None:
-                if ga_data.num_generation_no_improve > ga_data.early_stop:
-                    if self.is_print:
-                        print('|' + '='*85 + '|')
-                        print(f'Early stopping: {i}')
-                        print('Best solution:')
-                        print(f'\tgenotype: {ga_data.best_solution["genotype"]}')
-                        print(f'\tphenotype: {ga_data.best_solution["phenotype"]}')
-                        print(f'\tfitness score: {ga_data.best_solution["score"]}')
-                        print(f'\tobjective score: {ga_data.best_solution["obj_score"]}')
-                    break
+            if ga_data.num_generation_no_improve > ga_data.early_stop:
+                break
+
+        if self.is_print:
+            ga_data.print_best_solution()
         return ga_data
