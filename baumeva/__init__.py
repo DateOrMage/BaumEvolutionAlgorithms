@@ -1,7 +1,7 @@
 # author: Aleksei
 
 # version
-__version__ = '0.4.4'
+__version__ = '0.4.5'
 
 # from .ga import BasePenalty, DynamicPenalty
 # from .ga import GaData

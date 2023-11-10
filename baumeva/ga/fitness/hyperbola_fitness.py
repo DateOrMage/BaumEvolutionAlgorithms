@@ -19,7 +19,7 @@ class HyperbolaFitness(BaseFitness):
         """
 
         if self.obj_value is not None:
-            score = 1.0 / (1 + abs(self.obj_value - (obj_score + penalty_value)))
+            score = 1.0 / (1 + abs(self.obj_value - obj_score) + penalty_value)
         else:
             score = -(obj_score + penalty_value)
 
