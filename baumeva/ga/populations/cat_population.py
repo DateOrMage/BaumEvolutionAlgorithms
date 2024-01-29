@@ -1,5 +1,5 @@
 from typing import List
-from random import randrange
+from random import randrange, seed
 from .base_population import BasePopulation
 
 
@@ -34,6 +34,9 @@ class CatPopulation(BasePopulation):
         :return: list representing the genotype of the generated individual.
         """
         genotype = []
+        if self.rnd_seed is not None:
+            seed(self.rnd_seed)
+            self.rnd_seed += 1
         for gen in self.gens:
             genotype.append(randrange(gen[0], gen[1]+1, gen[2]))
         return genotype
