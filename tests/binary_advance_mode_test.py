@@ -1,8 +1,9 @@
 import math
-
+from random import seed
 import baumeva
 from baumeva.ga import GaData, BinaryPopulation, HyperbolaFitness, TournamentSelection, OnePointCrossover,\
-    BinStringMutation, NewGeneration, BinaryGrayPopulation, CatPopulation, OrderCatPopulation
+    BinStringMutation, NewGeneration, BinaryGrayPopulation, CatPopulation, OrderCatPopulation, BalancedSelection,\
+    RankedSelection, TwoPointCrossover, UniformCrossover
 
 
 def func_grivanka(value_list):
@@ -20,10 +21,10 @@ def print_result(data: dict) -> None:
         print(f"{key}: {data[key]}")
 
 
-baumeva.generator.rnd_seed = 19
-ga_data = GaData(num_generations=2, early_stop=60)
-bp = BinaryPopulation()
-bp.set_params(num_individ=5, gens=((-16, 16, 0.01), (-16, 16, 0.01)), input_population=None)
+baumeva.generator.rnd_seed = 11
+ga_data = GaData(num_generations=100, early_stop=60)
+bp = BinaryGrayPopulation()
+bp.set_params(num_individ=100, gens=((-16, 16, 0.01), (-16, 16, 0.01)), input_population=None)
 bp.fill()
 ga_data.population = bp
 for d in ga_data.population:
@@ -34,7 +35,7 @@ fitness_func = HyperbolaFitness(obj_function=func_grivanka, obj_value=0)
 fitness_func.execute(ga_data)
 ga_data.update()
 
-selection = TournamentSelection(tournament_size=2)
+selection = TournamentSelection(tournament_size=3)
 crossover = OnePointCrossover()
 mutation = BinStringMutation(0.35)
 new_generation = NewGeneration('best')

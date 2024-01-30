@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
+from random import seed
 from baumeva.global_generator import generator
 
 
@@ -17,6 +18,7 @@ class BasePopulation(ABC, list):
     def __init__(self) -> None:
         super().__init__()
         self.rnd_seed = generator.rnd_seed
+        seed(self.rnd_seed)
 
     @abstractmethod
     def set_params(self, num_individ: int, gens: tuple, input_population: List[list] = None) -> None:

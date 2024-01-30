@@ -1,6 +1,7 @@
-from random import shuffle
+from random import shuffle, seed
 from baumeva.ga import GaData, OrderCatPopulation, HyperbolaFitness, TournamentSelection, OrderCrossover, SwapMutation, \
     NewGeneration
+import baumeva
 
 
 def func_word(word: list) -> float:
@@ -15,6 +16,7 @@ def func_word(word: list) -> float:
 input_population_size = 100
 input_word = list("ALGORITHM")
 in_pop = []
+seed(42)
 for i in range(input_population_size):
     shuffle(input_word)
     in_pop.append(input_word.copy())
@@ -25,6 +27,8 @@ def print_result(data: dict) -> None:
     for key in data.keys():
         print(f"{key}: {data[key]}")
 
+
+baumeva.generator.rnd_seed = 42
 
 ga_data = GaData(num_generations=100, early_stop=60)
 ocp = OrderCatPopulation()

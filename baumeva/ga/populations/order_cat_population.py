@@ -1,4 +1,4 @@
-from random import sample, seed
+from random import sample
 from typing import List
 from .cat_population import CatPopulation
 
@@ -17,9 +17,6 @@ class OrderCatPopulation(CatPopulation):
                    Example: (0, 30, 10) - 30 total points , but track contains only 10.
         :return: genotype: List[int]
         """
-        if self.rnd_seed is not None:
-            seed(self.rnd_seed)
-            self.rnd_seed += 1
         genotype = sample(range(self.gens[0], self.gens[1]+1), self.gens[2])
         return genotype
 

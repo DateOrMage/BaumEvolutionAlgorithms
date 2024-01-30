@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from random import randint, seed
+from random import randint
 from .base_population import BasePopulation
 
 
@@ -77,12 +77,8 @@ class BinaryPopulation(BasePopulation):
         :return: list of '0' and '1'.
         """
         genotype = ''
-        if self.rnd_seed is not None:
-            seed(self.rnd_seed)
-            self.rnd_seed += 1
         for i in range(len(self.gens)):
             genotype += self.index_to_binary(value=randint(0, self.real_num_points[i]), num_bits=self.num_bits[i])
-
         return list(genotype)
 
     def float_individ_to_binary(self, float_gens: list) -> list:
