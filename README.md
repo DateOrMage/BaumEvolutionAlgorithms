@@ -314,7 +314,8 @@ For combinatory GA:
 
 This classes support one parameter - `mutation_lvl`. Can be string ('weak', 'normal', 'strong') or a float from 0 to 1. Default value - 'normal'.
 
-
+### Random seed
+For random seed use `baumeva.generator.rnd_seed = number` before GA implementation, where `number` is any integer value.
 
 
 
