@@ -1,4 +1,4 @@
-from random import sample
+from random import sample, seed
 from copy import deepcopy
 from .base_selection import BaseSelection
 from baumeva.ga import GaData
@@ -17,6 +17,7 @@ class TournamentSelection(BaseSelection):
         :param tournament_size: The size of each tournament (default: 3).
         :return: None
         """
+        super().__init__()
         self.tournament_size = tournament_size
 
     def check_tournament_size(self, num_individ: int) -> None:
@@ -55,6 +56,9 @@ class TournamentSelection(BaseSelection):
         """
         idx_total = list(range(len(ga_data.population)))
         total_num_parents = int(ga_data.children_percent*ga_data.population.num_individ)
+        if self.rnd_seed is not None:
+            seed(self.rnd_seed)
+            self.rnd_seed += 1
         for i in range(total_num_parents):
             parents_pair = []
             while len(parents_pair) < 2:

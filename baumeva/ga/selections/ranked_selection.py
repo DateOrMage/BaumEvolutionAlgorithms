@@ -16,7 +16,7 @@ class RankedSelection(BalancedSelection):
 
         :return: None
         """
-        pass
+        super().__init__()
 
     def add_probabilities(self, ga_data: GaData):
         """

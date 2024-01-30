@@ -1,11 +1,18 @@
 from abc import ABC
+from typing import Optional
 from baumeva.ga import GaData
+from baumeva.global_generator import generator
 
 
 class BaseSelection(ABC):
     """
     Abstract class for implementing selection operations in a genetic algorithm.
     """
+    rnd_seed: Optional[int] = None
+
+    def __init__(self) -> None:
+        #super().__init__()
+        self.rnd_seed = generator.rnd_seed
 
     def execute(self, ga_data: GaData) -> None:
         """

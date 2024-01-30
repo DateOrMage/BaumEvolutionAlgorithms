@@ -1,4 +1,4 @@
-from random import random
+from random import random, seed
 from copy import deepcopy
 from .base_selection import BaseSelection
 from baumeva.ga import GaData
@@ -18,7 +18,7 @@ class BalancedSelection(BaseSelection):
 
         :return: None
         """
-        pass
+        super().__init__()
 
     def add_probabilities(self, ga_data: GaData):
         """
@@ -54,6 +54,9 @@ class BalancedSelection(BaseSelection):
         """
         total_num_parents = int(ga_data.children_percent * ga_data.population.num_individ)
 
+        if self.rnd_seed is not None:
+            seed(self.rnd_seed)
+            self.rnd_seed += 1
         for _ in range(total_num_parents):
             idxs = []
             while len(idxs) < 2:
@@ -61,6 +64,7 @@ class BalancedSelection(BaseSelection):
                 if len(idxs) == 0 or idx != idxs[-1]:
                     idxs.append(idx)
 
+            print(idxs)
             ga_data.parents.extend(deepcopy(ga_data.population[idx]) for idx in idxs)
 
     def execute(self, ga_data: GaData) -> None:
