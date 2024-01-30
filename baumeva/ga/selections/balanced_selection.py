@@ -64,7 +64,6 @@ class BalancedSelection(BaseSelection):
                 if len(idxs) == 0 or idx != idxs[-1]:
                     idxs.append(idx)
 
-            print(idxs)
             ga_data.parents.extend(deepcopy(ga_data.population[idx]) for idx in idxs)
 
     def execute(self, ga_data: GaData) -> None:
