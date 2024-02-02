@@ -170,6 +170,45 @@ print(f"Result: {ga_data.best_solution} ")
 
 This example demonstrates the use of the BaumEvA library to search for the word "ALGORITHM" using a combination genetic algorithm.
 
+### Collector Usage
+
+Another way of use of the library is the "collector mode", which allows to collect a customized GA, just like the "advanced mode", but at the same time it is much easier to use.
+
+```python
+from baumeva import CollectorGA
+from baumeva.ga import BinaryPopulation, HyperbolaFitness, TournamentSelection, OnePointCrossover,\
+    BinStringMutation, NewGeneration
+
+
+def generate_gens_params(one_gen: list, num_gens: int) -> list:
+    gens_params = []
+    for _ in range(num_gens):
+        gens_params.append(one_gen)
+    return gens_params
+
+
+def one_max(gens: list) -> float:
+    return sum(gens) / len(gens)
+
+
+my_ga = CollectorGA(fitness=HyperbolaFitness(obj_function=one_max, obj_value=1),
+                    selection=TournamentSelection(5),
+                    crossover=OnePointCrossover(),
+                    mutation=BinStringMutation(0.15),
+                    new_generation=NewGeneration('best'))
+
+my_ga.set_population(population=BinaryPopulation,
+                     num_individ=100,
+                     num_generations=100,
+                     gens=generate_gens_params([0, 1, 1], 30),
+                     early_stop=35)
+
+my_ga.optimize()
+```
+
+This example demonstrates the optimization of function one_max() using elements of binary genetic algorithm.
+
+
 ### Components Used:
 
 1. **GaData**: Class for holding and managing data related to a genetic algorithm run.

@@ -1,8 +1,9 @@
 # author: Aleksei
 
 # version
-__version__ = '0.4.6'
+__version__ = '0.5.0'
 
+from .collector_ga import CollectorGA
 from .combinatory_ga import CombinatoryGA
 from .binary_ga import BinaryGA
 from .global_generator import generator
