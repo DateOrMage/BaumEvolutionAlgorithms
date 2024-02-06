@@ -92,4 +92,4 @@ class CategoricalMutation(BaseMutation):
         :return: None
         """
         for child in ga_data.children:
-            self.get_mutation(child, ga_data.gen_pool)
+            self.get_mutation(child, ga_data.population.gens)

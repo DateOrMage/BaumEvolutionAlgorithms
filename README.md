@@ -88,20 +88,20 @@ def cat_gens_generator(dim: int) -> list:
 def func_uni_value(value_list):
     return len(set(value_list))**2 - 1
 
-
 categorical_ga = CategoricalGA(num_generations=100,
                                num_individ=300,
                                gens=cat_gens_generator(10),
                                obj_function=func_uni_value,
                                obj_value=0,
                                mutation_lvl=0.1,
-                               tournament_size=5,
+                               tournament_size=10,
                                early_stop=None)
 
 ga_data = categorical_ga.optimize()
 ```
 
 Constructor of `CategoricalGA` have the same set of arguments as `BinaryGA` except of `is_gray`.
+Note that if you want to create some or all genes as list of values you should use `list`, not `tuple`. For example `["a", "b", "c", "d"]` should be list. If you'd like to use standard range of values to define gene use `tuple`, for example `(1, 10, 1)` for numbers from 1 to 10.
 
 #### Conditional optimization
 

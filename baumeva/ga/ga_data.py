@@ -10,7 +10,6 @@ class GaData:
         idx_generation (int): Index of the current generation.
         num_generation_no_improve (int): Number of consecutive generations with no improvement.
         population (BasePopulation): Current population of individuals.
-        gen_pool (tuple): Tuple of all possible genes for Categorical GA mutation
         parents (BasePopulation): Selected parent individuals for crossover.
         children (BasePopulation): Offspring individuals produced by crossover.
         historical_best (list): List of historical best scores for each generation.
@@ -31,7 +30,6 @@ class GaData:
     historical_mediocre: list = []
     historical_worst: list = []
     best_solution: dict = None
-    gen_pool: tuple = None
 
     def __init__(self, num_generations: int, children_percent: float = 0.95, early_stop: int = 10, gen_pool: tuple = None) -> None:
         """
@@ -45,7 +43,6 @@ class GaData:
         self.num_generations = num_generations
         self.early_stop = early_stop
         self.children_percent = children_percent
-        self.gen_pool = gen_pool
 
     def get_avg_score(self) -> float:
         """
