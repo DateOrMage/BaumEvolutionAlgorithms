@@ -31,12 +31,12 @@ class GaData:
     historical_worst: list = []
     best_solution: dict = None
 
-    def __init__(self, num_generations: int, children_percent: float = 0.95, early_stop: int = 10) -> None:
+    def __init__(self, num_generations: int, children_percent: float = 0.95, early_stop: int = 10, gen_pool: tuple = None) -> None:
         """
         Initialize the GaData instance.
 
         :param num_generations: number of generations the genetic algorithm will run.
-        :param children_percent: percentage of cheldren to be created as part of new offsprings.
+        :param children_percent: percentage of children to be created as part of new offsprings.
         :param early_stop: number of consecutive generations with no improvement to trigger early stopping.
         :return: None
         """

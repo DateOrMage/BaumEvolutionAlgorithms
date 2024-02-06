@@ -71,6 +71,38 @@ There are also special class for combinatory genetic algorithm - `CombinatoryGA`
                      9 - last categorical value, step between categorical is 1 (const), 10 - number of categorical
                      values in every individ.
 
+#### Categorical Genetic Algorithm example usage
+
+For optimization in categorical parameter space you should utilize `CategoricalGA`. Example of `CategoricalGA` usage described below.
+
+```python
+from baumeva import CategoricalGA
+import string
+
+def cat_gens_generator(dim: int) -> list:
+    gens_params = []
+    for _ in range(dim):
+        gens_params.append([i for i in string.ascii_lowercase[:10]])
+    return gens_params
+
+def func_uni_value(value_list):
+    return len(set(value_list))**2 - 1
+
+categorical_ga = CategoricalGA(num_generations=100,
+                               num_individ=300,
+                               gens=cat_gens_generator(10),
+                               obj_function=func_uni_value,
+                               obj_value=0,
+                               mutation_lvl=0.1,
+                               tournament_size=10,
+                               early_stop=None)
+
+ga_data = categorical_ga.optimize()
+```
+
+Constructor of `CategoricalGA` have the same set of arguments as `BinaryGA` except of `is_gray`.
+Note that if you want to create some or all genes as list of values you should use `list`, not `tuple`. For example `["a", "b", "c", "d"]` should be list. If you'd like to use standard range of values to define gene use `tuple`, for example `(1, 10, 1)` for numbers from 1 to 10.
+
 #### Conditional optimization
 
 For conditional optimization tasks you can use same classes `BinaryGA`, `CombinatoryGA` with two additional parameters: `penalty`, `conditions`.
@@ -257,7 +289,7 @@ Supports the following parameters:
 - `mutation_lvl (str | float, default: 'normal')` - mutation probability, can accept float value or string: 'weak', 'normal', 'strong';
 - `transfer_parents (str, default: "best")` - type of transfer parents: "best" or "random".
 
-### CombinatoryGA 
+### CombinatoryGA and CategoricalGA
 Class for perform combinatory genetic algorithm (categorical order combinations without repetitions). 
 Supports all above parameters except `is_gray`.
 
@@ -276,7 +308,8 @@ Attributes:
 - `historical_best (list)` - list of historical best scores for each generation;
 - `historical_mediocre (list)` - list of historical average scores for each generation;
 - `historical_worst (list)` - list of historical worst scores for each generation;
-- `best_solution (dict)` - dictionary representing the best individual solution found so far.
+- `best_solution (dict)` - dictionary representing the best individual solution found so far;
+- `gen_pool (tuple)` - in case of categorical GA is tuple of possible values for each gene.
 
 ### NewGeneration
 Class for creating a new generation of individuals in a genetic algorithm. Supports the following parameter:

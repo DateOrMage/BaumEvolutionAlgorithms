@@ -6,4 +6,4 @@ from .fitness import BaseFitness, HyperbolaFitness
 from .selections import BaseSelection, TournamentSelection, BalancedSelection, RankedSelection
 from .crossovers import BaseCrossover, OrderCrossover, OnePointCrossover, TwoPointCrossover, UniformCrossover
 from .mutations import BaseMutation, BaseCombinatoryMutation, InversionMutation, SwapMutation, MovementMutation,\
-                       ShiftMutation, BinStringMutation
+                       ShiftMutation, BinStringMutation, CategoricalMutation
