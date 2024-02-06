@@ -1,6 +1,6 @@
 from typing import List, Callable, Union, Any
 from .ga import GaData, CatPopulation, HyperbolaFitness, BasePenalty, TournamentSelection,\
-                OnePointCrossover, NewGeneration, CategoricalMutation, UniformCrossover, RankedSelection
+                NewGeneration, CategoricalMutation, UniformCrossover
 from copy import deepcopy
 
 
@@ -71,14 +71,14 @@ class CategoricalGA:
         """
         # init GaData & Population
         ga_data = GaData(num_generations=self.num_generations, children_percent=self.children_percent,
-                         early_stop=self.early_stop, gen_pool=deepcopy(self.gens))
+                         early_stop=self.early_stop)
         population = CatPopulation()
 
         population.set_params(num_individ=self.num_individ, gens=self.gens, input_population=self.input_population)
         # init fitness func, selection, crossover, mutation, new generation
         fitness_func = HyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
                                         input_data=self.input_data, penalty=self.penalty, conditions=self.conditions)
-        selection = RankedSelection() # TournamentSelection(tournament_size=self.tournament_size)
+        selection = TournamentSelection(tournament_size=self.tournament_size)
         cross = UniformCrossover()
         mutation = CategoricalMutation(mutation_lvl=self.mutation_lvl)
         new_generation = NewGeneration(transfer_parents=self.transfer_parents)

@@ -18,7 +18,7 @@ categorical_ga = CategoricalGA(num_generations=100,
                                obj_function=func_uni_value,
                                obj_value=0,
                                mutation_lvl=0.1,
-                               tournament_size=5,
+                               tournament_size=10,
                                early_stop=None)
 
 ga_data = categorical_ga.optimize()
