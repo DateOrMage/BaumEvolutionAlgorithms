@@ -10,7 +10,7 @@ class BalancedSelection(BaseSelection):
     Inherits from BaseSelection.
     """
     score_type = 'score'
-    selection_scores = [0]
+    selection_scores: list = None
 
     def __init__(self):
         """

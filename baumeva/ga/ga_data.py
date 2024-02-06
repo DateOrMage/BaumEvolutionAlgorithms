@@ -26,12 +26,12 @@ class GaData:
     population: BasePopulation = None
     parents: BasePopulation = None
     children: BasePopulation = None
-    historical_best: list = []
-    historical_mediocre: list = []
-    historical_worst: list = []
+    historical_best: list = None
+    historical_mediocre: list = None
+    historical_worst: list = None
     best_solution: dict = None
 
-    def __init__(self, num_generations: int, children_percent: float = 0.95, early_stop: int = 10, gen_pool: tuple = None) -> None:
+    def __init__(self, num_generations: int, children_percent: float = 0.95, early_stop: int = 10) -> None:
         """
         Initialize the GaData instance.
 
@@ -43,6 +43,9 @@ class GaData:
         self.num_generations = num_generations
         self.early_stop = early_stop
         self.children_percent = children_percent
+        self.historical_best = []
+        self.historical_mediocre = []
+        self.historical_worst = []
 
     def get_avg_score(self) -> float:
         """

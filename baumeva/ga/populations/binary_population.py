@@ -8,10 +8,10 @@ class BinaryPopulation(BasePopulation):
     Class for representing a binary population in a genetic algorithm.
     Inherits from BasePopulation.
     """
-    num_bits: List[int] = []
-    real_num_points: List[int] = []
-    real_step: List[float] = []
-    idx_bits: List[int] = [0]
+    num_bits: List[int]
+    real_num_points: List[int]
+    real_step: List[float]
+    idx_bits: List[int]
 
     def set_params(self, num_individ: int, gens: tuple, input_population: List[list] = None) -> None:
         """
@@ -31,6 +31,10 @@ class BinaryPopulation(BasePopulation):
         self.gens = gens
         self.input_population = input_population
         self.is_phenotype = True
+        self.num_bits = []
+        self.real_num_points = []
+        self.real_step = []
+        self.idx_bits = [0]
 
     @staticmethod
     def get_real_number_of_points(num_points: int) -> Tuple[int, int]:
