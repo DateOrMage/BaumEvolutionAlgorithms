@@ -1,5 +1,5 @@
 from typing import List
-from random import randrange
+from random import randrange, choice
 from .base_population import BasePopulation
 
 
@@ -35,7 +35,12 @@ class CatPopulation(BasePopulation):
         """
         genotype = []
         for gen in self.gens:
-            genotype.append(randrange(gen[0], gen[1]+1, gen[2]))
+            if isinstance(gen, tuple):
+                genotype.append(randrange(gen[0], gen[1]+1, gen[2]))
+            elif isinstance(gen, list):
+                genotype.append(choice(gen))
+            else:
+                raise Exception(f'Unexpected data type of gen: {type(gen)}')
         return genotype
 
     def fill(self) -> None:
