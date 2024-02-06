@@ -353,7 +353,7 @@ All classes support the following parameters:
 
 ### Classes for selection methods
 
-For both binary and combinatory GA:
+For all types GA:
 
 - BalancedSelection()
 - RankedSelection()
@@ -361,7 +361,7 @@ For both binary and combinatory GA:
 
 ### Classes for crossover methods
 
-For binary GA:
+For binary and categorical GA:
 
  - OnePointCrossover()
  - TwoPointCrossover()
@@ -383,6 +383,10 @@ For combinatory GA:
 - MovementMutation()
 - ShiftMutation()
 - SwapMutation()
+
+For categorical GA:
+
+- CategoricalMutation()
 
 This classes support one parameter - `mutation_lvl`. Can be string ('weak', 'normal', 'strong') or a float from 0 to 1. Default value - 'normal'.
 
