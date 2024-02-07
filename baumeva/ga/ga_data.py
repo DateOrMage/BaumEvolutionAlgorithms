@@ -69,7 +69,7 @@ class GaData:
             self.population.sort_by_dict()
 
         self.historical_best.append(self.population[-1]['score'])
-        self.historical_mediocre.append(self.get_avg_score())
+        self.historical_mediocre.append(self.population[int(len(self.population)/2)]['score'])
         self.historical_worst.append(self.population[0]['score'])
 
         if self.best_solution is None:
