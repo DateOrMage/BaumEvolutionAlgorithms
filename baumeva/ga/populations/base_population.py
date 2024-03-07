@@ -63,6 +63,7 @@ class BasePopulation(ABC, list):
 
         :return: None
         """
+        data["feasible"] = True
         self.append(data)
 
     def reset_idx_individ(self) -> None:
@@ -91,7 +92,9 @@ class BasePopulation(ABC, list):
         :return: An empty individual dictionary or None if the population is empty.
         """
         if len(self) > 0:
-            return dict.fromkeys(self[0].keys())
+            emt_ind = dict.fromkeys(self[0].keys())
+            emt_ind["feasible"] = True
+            return emt_ind
         else:
             return None
 

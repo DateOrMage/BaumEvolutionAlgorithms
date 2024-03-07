@@ -66,7 +66,7 @@ class BaseFitness(ABC):
                 self.__idx_opt_value = self.conditions.index('optimize')
                 self.conditions.remove('optimize')
 
-    def get_penalty_value(self, values: List[Union[int, float]], idx_generation:  int) -> Union[int, float]:
+    def get_penalty_value(self, values: List[Union[int, float]], idx_generation:  int, best_individ: dict) -> Union[int, float]:
         """
         Calculate the penalty value of individual by given condition values and idx_generation.
 
@@ -76,6 +76,10 @@ class BaseFitness(ABC):
         """
         if self.penalty.name() == 'DynamicPenalty':
             return self.penalty.execute(conditionals=self.conditions, values=values, iter_generation=idx_generation)
+        elif self.penalty.name() == 'AdaptivePenalty':
+            return self.penalty.execute(conditionals=self.conditions, values=values, iter_generation=idx_generation, best_individ = best_individ)
+        elif self.penalty.name() == 'StaticPenalty':
+            return self.penalty.execute(conditionals=self.conditions, values=values,)
         else:
             return self.penalty.execute(conditionals=self.conditions, values=values)
 
@@ -133,7 +137,9 @@ class BaseFitness(ABC):
                 values = self.calc_obj_func(genotype=individ['genotype'])
                 if self.__is_conditional_opt:
                     individ['obj_score'] = values.pop(self.__idx_opt_value)
-                    penalty_value = self.get_penalty_value(values=values, idx_generation=ga_data.idx_generation)
+                    for _, v in enumerate(values):
+                        individ['feasible'] = True if (v <= 0) and (v == 0) else False
+                    penalty_value = self.get_penalty_value(values=values, idx_generation=ga_data.idx_generation, best_individ = ga_data.best_solution)
                     individ['score'] = self.get_fitness_score(individ['obj_score'], penalty_value)
                 else:
                     individ['obj_score'] = values

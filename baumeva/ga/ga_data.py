@@ -99,3 +99,4 @@ class GaData:
             print(f'\tphenotype: {self.best_solution["phenotype"]}')
         print(f'\tfitness score: {self.best_solution["score"]}')
         print(f'\tobjective score: {self.best_solution["obj_score"]}')
+        print(f'\tfeasible region: {self.best_solution["feasible"]}')
