@@ -1,6 +1,7 @@
 from baumeva import CategoricalGA
 import string
 
+
 def cat_gens_generator(dim: int) -> list:
     gens_params = []
     for _ in range(dim):

@@ -1,6 +1,7 @@
 from typing import List, Union
 from .base_penalty import BasePenalty
 
+
 class AdaptivePenalty(BasePenalty):
     def __init__(self, 
                  delta: float = 1, 
@@ -35,7 +36,8 @@ class AdaptivePenalty(BasePenalty):
                 raise Exception(f'Unexpected sign for conditionals: {conditional}, please use "!=" or "<="')
             self.sum_conditional += res ** self.power
     
-    def execute(self, conditionals: List[str], values: List[float], best_individ, iter_generation: int = 0, **kwargs) -> float: 
+    def execute(self, conditionals: List[str], values: List[float], best_individ, iter_generation: int = 0, **kwargs)\
+            -> float:
         """
         Method for penalties score perform.
 
@@ -48,12 +50,12 @@ class AdaptivePenalty(BasePenalty):
         super().execute(conditionals, values, **kwargs)
         lambda_ = 10
         if iter_generation != 0:
-            if best_individ["feasible"]: # "b_i is is the best element at generation, feasible region"
+            if best_individ["feasible"]:  # "b_i is the best element at generation, feasible region"
                 lambda_ = (1 / self.betta_1) * lambda_
-            elif not best_individ["feasible"]: # "b_i is is is the best element at generation, non feasible region"
+            elif not best_individ["feasible"]:  # "b_i is is is the best element at generation, non feasible region"
                 lambda_ = self.betta_2 * lambda_
             else:
-                self.lambda_ = self.lambda_
+                lambda_ = lambda_
         else:
             lambda_ = 0 
 

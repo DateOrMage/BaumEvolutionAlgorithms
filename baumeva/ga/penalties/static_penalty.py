@@ -1,6 +1,7 @@
 from typing import List, Union, Dict 
 from .base_penalty import BasePenalty
 
+
 class StaticPenalty(BasePenalty):
     def __init__(self, 
                  equality_intervals: Dict[int, List[tuple]],
@@ -41,28 +42,21 @@ class StaticPenalty(BasePenalty):
     def get_sum_conditional_func(self, conditionals: List[str], values: List[float]) -> None:
 
         for i, conditional in enumerate(conditionals):
-            # print(conditional)
             if conditional == '!=':
-                print(f"i: {i} if conditional == '!=")
                 if values[i] != 0:
-                    print("if conditional == '!=' values[i] != 0 and res = 0")
                     res = 0
                     continue
                 for idx, val in enumerate(self.equality_intervals[i]):
-                    print(f"equality_intervals idx {idx} val[0] {val[0]} val[1] : {val[1]}| i: {i}")
-                    if values[i] > val[0] and values[i] < val[1]:
-                        print(f"self.equality_r_coef[i][idx] * abs(values[i]) : {self.equality_r_coef[i][idx] * abs(values[i])}")
+                    if val[0] < values[i] < val[1]:
                         res = self.equality_r_coef[i][idx] * abs(values[i])
                     else: 
                         raise Exception(f"Unexpected equality intervals: {self.equality_intervals[i]}")
             elif conditional == '<=':
-                print(f"i: {i} conditional == '<='")
                 if values[i] <= 0:
-                    print(f"i: {i} values[i] <= 0 and res = 0")
                     res = 0
                     continue
                 for idx, val in enumerate(self.inequality_intervals[i]):
-                    if values[i] > val[0] and values[i] < val[1]:
+                    if val[0] < values[i] < val[1]:
                         res = self.equality_r_coef[i][idx] * max(0, values[i])
                     else:
                         raise Exception(f"Unexpected inequality intervals: {self.inequality_intervals[i]}")

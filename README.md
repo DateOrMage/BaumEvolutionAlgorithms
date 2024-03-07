@@ -105,7 +105,7 @@ Note that if you want to create some or all genes as list of values you should u
 
 #### Conditional optimization
 
-For conditional optimization tasks you can use same classes `BinaryGA`, `CombinatoryGA` with two additional parameters: `penalty`, `conditions`.
+For conditional optimization tasks you can use same classes `BinaryGA`, `CombinatoryGA`, `CategoricalGA`  with two additional parameters: `penalty`, `conditions`.
 
 The `penalty` is penalty function, subclass of `BasePenalty()`, initialization before
                         initialization subclass of `BaseFitness()`, used for conditional optimization.
@@ -315,10 +315,14 @@ Attributes:
 Class for creating a new generation of individuals in a genetic algorithm. Supports the following parameter:
 - `transfer_parents (str, default: 'best')` - strategy for transferring certain amount of parents to the next generation. Can be 'best' or 'random'.
 
-### DynamicPenalty
-Class for creating and calculating penalty for conditional optimization. 
+### Classes for penalties
+Class for creating and calculating penalty for conditional optimization.
 
-Only 2 types of conditional: `g(x) <= 0` or  `h(x) != 0`.
+- StaticPenalty()
+- DynamicPenalty()
+- AdaptivePenalty()
+
+Only 2 types of conditional: `g(x) <= 0` or  `h(x) == 0`.
 
 Example: 
 ```python

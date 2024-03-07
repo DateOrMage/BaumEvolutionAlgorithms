@@ -16,8 +16,8 @@ def func_grivanka(value_list):
 def parabola_conditions(x: list) -> tuple:
     res = -x[0]*x[0] + 9
     condition_1 = -x[0]-3
-    condition_2 = x[0]+3
-    return res, condition_1, condition_2
+    return res, condition_1
+
 
 def func_c01(gens: list) -> tuple:
     np_gens = np.array(gens)
@@ -40,26 +40,20 @@ binary_ga = BinaryGA(num_generations=100,
                      mutation_lvl=0.35,
                      early_stop=None)
 
-bin_ga_conditions = BinaryGA(num_generations=100,
-                             num_individ=100,
+bin_ga_conditions = BinaryGA(num_generations=400,
+                             num_individ=25,
                              gens=((-5, 5, 0.001),),
-                             obj_function=func_c01,# parabola_conditions,
-                             obj_value=0,
-                             penalty=StaticPenalty(equality_intervals = {1: [(-3, 1),(1, 3),(3, np.inf)], 
-                                                                        #  1: [(1, 2),(2, 3),(3, np.inf)]
-                                                                         },
-                                                    equality_r_coef = {1: [50, 100, 500], 
-                                                                    #    1: [5, 10, 50]
-                                                                       },
-                                                    inequality_intervals = {0: [(-3, 1),(1, 3),(3, np.inf)], 
-                                                                            # 1: [(10, 20),(20, 30),(30, np.inf)]
-                                                                            },
-                                                    inequality_r_coef = {0: [100, 400, 600], 
-                                                                        #  1 : [1, 3, 5]
-                                                                         }),
-                             conditions=['optimize', '<=', ], # '!='
+                             obj_function=parabola_conditions,# parabola_conditions,
+                             obj_value=None,
+                             penalty=DynamicPenalty(),
+                             # penalty=StaticPenalty(equality_intervals={1: [(-3, 1), (1, 3), (3, np.inf)], },
+                             #                       equality_r_coef={1: [50, 100, 500], },
+                             #                       inequality_intervals={0: [(-3, 1), (1, 3), (3, np.inf)], },
+                             #                       inequality_r_coef={0: [100, 400, 600], }),
+                             conditions=['optimize', '<=',], # '!='
                              mutation_lvl=0.35,
-                             early_stop=None)
+                             early_stop=None,
+                             is_gray=True)
 
 ga_data = binary_ga.optimize()
 ga_data_conditions = bin_ga_conditions.optimize()

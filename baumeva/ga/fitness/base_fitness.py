@@ -137,9 +137,17 @@ class BaseFitness(ABC):
                 values = self.calc_obj_func(genotype=individ['genotype'])
                 if self.__is_conditional_opt:
                     individ['obj_score'] = values.pop(self.__idx_opt_value)
-                    for _, v in enumerate(values):
-                        individ['feasible'] = True if (v <= 0) and (v == 0) else False
-                    penalty_value = self.get_penalty_value(values=values, idx_generation=ga_data.idx_generation, best_individ = ga_data.best_solution)
+                    for i_v, v in enumerate(values):
+                        if self.conditions[i_v] == '<=':
+                            if v > 0:
+                                individ['feasible'] = False
+                        else:
+                            if v != 0:
+                                individ['feasible'] = False
+                        # individ['feasible'] = True if ((v <= 0) and (v == 0)) else False
+                        # print(v)
+                    penalty_value = self.get_penalty_value(values=values, idx_generation=ga_data.idx_generation,
+                                                           best_individ=ga_data.best_solution)
                     individ['score'] = self.get_fitness_score(individ['obj_score'], penalty_value)
                 else:
                     individ['obj_score'] = values
