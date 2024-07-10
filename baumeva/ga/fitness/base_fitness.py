@@ -51,6 +51,14 @@ class BaseFitness(ABC):
         self.conditions = ['optimize'] if conditions is None else conditions
         self.check_task()
 
+    def set_opt_value(self) -> None:
+        """
+        Method for setting indices of optimization values.
+        :return: None.
+        """
+        self.__idx_opt_value = self.conditions.index('optimize')
+        self.conditions.remove('optimize')
+
     def check_task(self) -> None:
         """
         Method for definition type of task: conditional or not.
@@ -63,8 +71,7 @@ class BaseFitness(ABC):
                 warn(f'Penalty function does not work with this conditionals: {self.conditions}', UserWarning)
             else:
                 self.__is_conditional_opt = True
-                self.__idx_opt_value = self.conditions.index('optimize')
-                self.conditions.remove('optimize')
+                self.set_opt_value()
 
     def get_penalty_value(self, values: List[Union[int, float]], idx_generation:  int, best_individ: dict) -> Union[int, float]:
         """
@@ -83,17 +90,12 @@ class BaseFitness(ABC):
         else:
             return self.penalty.execute(conditionals=self.conditions, values=values)
 
-    def calc_obj_func(self, genotype: List[Union[int, float]]) -> Union[int, float, list]:
+    def check_input(self, values: list[Union[int, float]]) -> list[Union[int, float]]:
         """
-        Method for calculating objective function.
-
-        :param genotype: the genotype of an individual.
-        :return: one or more values.
+        Checks whether the number of values returned from objective function is correct.
+        :param values: values of objective function.
+        :return: values.
         """
-        if self.input_data:
-            values = self.obj_function(self.input_data, genotype)
-        else:
-            values = self.obj_function(genotype)
         if self.__is_conditional_opt:
             try:
                 if len(values) != (len(self.conditions)+1):
@@ -109,17 +111,41 @@ class BaseFitness(ABC):
             except TypeError:
                 return values
 
+    def calc_obj_func(self, genotype: List[Union[int, float]]) -> Union[int, float, list]:
+        """
+        Method for calculating objective function.
+
+        :param genotype: the genotype of an individual.
+        :return: one or more values.
+        """
+        if self.input_data:
+            values = self.obj_function(self.input_data, genotype)
+        else:
+            values = self.obj_function(genotype)
+
+        return self.check_input(values)
+
     @abstractmethod
-    def get_fitness_score(self, obj_score: Union[int, float], penalty_value: Union[int, float] = 0) ->\
+    def get_fitness_score(self, individ: dict, penalty_value: Union[int, float] = 0) ->\
             Union[int, float]:
         """
         Abstract method for calculating fitness score of individual.
 
-        :param obj_score: object value of an individual.
+        :param individ: data of an individual.
         :param penalty_value: fitness value of an individual.
         :return: fitness score of the individual.
         """
         pass
+
+    def set_obj_score(self, values: list[Union[int, float]], individ: dict) -> None:
+        """
+        Gets next objective score from values of objective function.
+
+        :param values: values of objective function
+        :param individ: specimen which gets the objective value.
+        :return: None.
+        """
+        individ['obj_score'] = values.pop(self.__idx_opt_value)
 
     def execute(self, ga_data: GaData) -> None:
         """
@@ -136,7 +162,7 @@ class BaseFitness(ABC):
             if individ['score'] is None:
                 values = self.calc_obj_func(genotype=individ['genotype'])
                 if self.__is_conditional_opt:
-                    individ['obj_score'] = values.pop(self.__idx_opt_value)
+                    self.set_obj_score(values, individ)
                     for i_v, v in enumerate(values):
                         if self.conditions[i_v] == '<=':
                             if v > 0:
@@ -148,11 +174,11 @@ class BaseFitness(ABC):
                         # print(v)
                     penalty_value = self.get_penalty_value(values=values, idx_generation=ga_data.idx_generation,
                                                            best_individ=ga_data.best_solution)
-                    individ['score'] = self.get_fitness_score(individ['obj_score'], penalty_value)
+                    individ['score'] = self.get_fitness_score(individ, penalty_value)
                 else:
                     individ['obj_score'] = values
                     penalty_value = 0
-                individ['score'] = self.get_fitness_score(individ['obj_score'], penalty_value)
+                individ['score'] = self.get_fitness_score(individ, penalty_value)
 
         if ga_data.population.is_phenotype:
             ga_data.population.swap()

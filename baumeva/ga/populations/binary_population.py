@@ -163,4 +163,7 @@ class BinaryPopulation(BasePopulation):
 
         :return: An empty instance of BinaryPopulation.
         """
-        return BinaryPopulation()
+        new_population = BinaryPopulation()
+        new_population.is_phenotype = True
+
+        return new_population

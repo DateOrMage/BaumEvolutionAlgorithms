@@ -27,6 +27,40 @@ class NewGeneration:
         if self.transfer_parents not in ['best', 'random']:
             raise Exception(f'transfer_parents must be equal "best" or "random", not {self.transfer_parents}')
 
+    def add_best(self, ga_data: GaData, num_elites) -> list:
+        """
+        Add best parent individuals to the offspring (elitism strategy).
+
+        :param ga_data: GaData instance containing population and related data.
+        :param num_elites: number of parent individuals to add.
+        :return: list of elites to add to the population.
+        """
+        elites = ga_data.population[-num_elites - 1:]
+        if ga_data.population.is_duplicate(elites):
+            loop_counter = 0
+            z_counter = 0
+            while ga_data.population.is_duplicate(elites):
+                break_out_loop = False
+                for i in range(1, len(elites)):
+                    for j in range(1, len(elites) - (i - 1)):
+                        if elites[-i]['genotype'] == elites[-i - j]['genotype']:
+                            del elites[-i - j]
+                            break_out_loop = True
+                            break
+                    if break_out_loop:
+                        break
+
+                z_counter += 1
+                if -num_elites - 1 - z_counter < 0:
+                    elites[0:0] = sample(ga_data.population, num_elites + 1 - len(elites))
+                    break
+                elites.insert(0, ga_data.population[-num_elites - 1 - z_counter])
+                loop_counter += 1
+                if loop_counter >= len(ga_data.children):
+                    break
+
+        return elites
+
     def add_parents(self, ga_data: GaData, num_elites: int) -> None:
         """
         Add parent individuals to the offspring based on the selected strategy.
@@ -36,29 +70,7 @@ class NewGeneration:
         :return: None
         """
         if self.transfer_parents == 'best':
-            elites = ga_data.population[-num_elites - 1:]
-            if ga_data.population.is_duplicate(elites):
-                loop_counter = 0
-                z_counter = 0
-                while ga_data.population.is_duplicate(elites):
-                    break_out_loop = False
-                    for i in range(1, len(elites)):
-                        for j in range(1, len(elites) - (i-1)):
-                            if elites[-i]['genotype'] == elites[-i-j]['genotype']:
-                                del elites[-i-j]
-                                break_out_loop = True
-                                break
-                        if break_out_loop:
-                            break
-
-                    z_counter += 1
-                    if -num_elites-1-z_counter < 0:
-                        elites[0:0] = sample(ga_data.population, num_elites + 1 - len(elites))
-                        break
-                    elites.insert(0, ga_data.population[-num_elites-1-z_counter])
-                    loop_counter += 1
-                    if loop_counter >= len(ga_data.children):
-                        break
+            elites = self.add_best(ga_data, num_elites)
         else:
             elites = sample(ga_data.population[:-1], num_elites)
             loop_counter = 0

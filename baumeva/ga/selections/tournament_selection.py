@@ -45,6 +45,16 @@ class TournamentSelection(BaseSelection):
                 best = ga_data.population[idx]
         return best
 
+    @staticmethod
+    def get_total_num_parents(ga_data: GaData) -> int:
+        """
+        Method for calculation the total number of parents to select.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: total number of parents.
+        """
+        return int(ga_data.children_percent * ga_data.population.num_individ)
+
     def tournament(self, ga_data: GaData) -> None:
         """
         Perform the tournament selection process. At the end n (ga_data.children_percent *
@@ -54,7 +64,7 @@ class TournamentSelection(BaseSelection):
         :return: None
         """
         idx_total = list(range(len(ga_data.population)))
-        total_num_parents = int(ga_data.children_percent*ga_data.population.num_individ)
+        total_num_parents = self.get_total_num_parents(ga_data)
         for i in range(total_num_parents):
             parents_pair = []
             while len(parents_pair) < 2:
