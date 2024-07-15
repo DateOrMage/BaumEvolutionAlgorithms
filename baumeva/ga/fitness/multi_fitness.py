@@ -1,5 +1,5 @@
 from .base_fitness import BaseFitness
-from typing import Union
+from typing import List, Union
 
 
 class MultiFitness(BaseFitness):
@@ -8,7 +8,7 @@ class MultiFitness(BaseFitness):
     Inherits from BaseFitness
     attribute: __idx_opt_value: list of indices of optimization values from object functions.
     """
-    __idx_opt_value: list[int] = None
+    __idx_opt_value: List[int] = None
 
     def get_fitness_score(self, obj_score: Union[int, float], penalty_value: Union[int, float] = 0) ->\
             Union[int, float]:
@@ -30,7 +30,7 @@ class MultiFitness(BaseFitness):
                                 if self.conditions[i] == 'optimize']
         self.conditions = list(filter(lambda a: a != 'optimize', self.conditions))
 
-    def check_input(self, values: list[Union[int, float]]) -> list[Union[int, float]]:
+    def check_input(self, values: List[Union[int, float]]) -> List[Union[int, float]]:
         """
         Checks whether the number of values returned from objective function is correct.
         :param values: values of objective function.
@@ -38,7 +38,7 @@ class MultiFitness(BaseFitness):
         """
         return list(values)
 
-    def set_obj_score(self, values: list[Union[int, float]], individ: dict) -> None:
+    def set_obj_score(self, values: List[Union[int, float]], individ: dict) -> None:
         """
         Gets next objective scores from values of objective function.
 

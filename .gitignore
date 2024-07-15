@@ -5,7 +5,9 @@
 /testing_pygad.py
 /testing_functions.py
 /test_new_features.py
+/validation.py
 /venv
+/.venv
 /dist/
 /baumeva.egg-info/
 *.pyc

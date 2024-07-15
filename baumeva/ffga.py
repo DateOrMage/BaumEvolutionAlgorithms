@@ -1,7 +1,6 @@
 from typing import List, Callable, Union, Any
 from .ga import GaData, MultiGaData, BinaryPopulation, BinaryGrayPopulation, FFGAFitness, BasePenalty, \
     BalancedSelection, TournamentSelection, RankedSelection, OnePointCrossover, BinStringMutation, MultiNewGeneration
-from .visualize import visualize
 
 
 class FFGA:

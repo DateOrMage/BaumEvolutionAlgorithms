@@ -1,7 +1,4 @@
-from copy import deepcopy
-from .populations import BasePopulation
 from typing import Union
-from itertools import cycle
 from .ga_data import GaData
 
 

@@ -90,7 +90,7 @@ class BaseFitness(ABC):
         else:
             return self.penalty.execute(conditionals=self.conditions, values=values)
 
-    def check_input(self, values: list[Union[int, float]]) -> list[Union[int, float]]:
+    def check_input(self, values: List[Union[int, float]]) -> List[Union[int, float]]:
         """
         Checks whether the number of values returned from objective function is correct.
         :param values: values of objective function.
@@ -137,7 +137,7 @@ class BaseFitness(ABC):
         """
         pass
 
-    def set_obj_score(self, values: list[Union[int, float]], individ: dict) -> None:
+    def set_obj_score(self, values: List[Union[int, float]], individ: dict) -> None:
         """
         Gets next objective score from values of objective function.
 

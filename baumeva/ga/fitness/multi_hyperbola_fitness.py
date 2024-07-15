@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 from .multi_fitness import MultiFitness
 
 
@@ -9,7 +9,7 @@ class MultiHyperbolaFitness(MultiFitness):
     """
 
     def get_fitness_score(self, individ: dict, penalty_value: Union[int, float] = 0) ->\
-            list[Union[int, float]]:
+            List[Union[int, float]]:
         """
         Method for calculating fitness score of individual.
 

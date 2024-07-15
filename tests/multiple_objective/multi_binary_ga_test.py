@@ -1,11 +1,6 @@
 from baumeva import FFGA, VEGA
 import math
-import numpy as np
-from pymoo.config import Config
-import matplotlib.pyplot as plt
 import time
-
-Config.warnings['not_compiled'] = False
 
 
 class timex:
@@ -17,6 +12,7 @@ class timex:
     def __exit__(self, type, value, traceback):
         # Вывод времени работы
         print('Время обработки: {:.2f} с'.format(time.time() - self.t))
+
 
 def griewank_func(value_list):
     res_sum = 0
@@ -172,39 +168,6 @@ moga = FFGA(num_generations=1000,
             mutation_lvl=0.05,
             early_stop=None)
 
-# bin_ga_conditions = BinaryGA(num_generations=400,
-#                              num_individ=25,
-#                              gens=((-5, 5, 0.001),),
-#                              obj_function=parabola_conditions,# parabola_conditions,
-#                              obj_value=None,
-#                              penalty=DynamicPenalty(),
-#                              # penalty=StaticPenalty(equality_intervals={1: [(-3, 1), (1, 3), (3, np.inf)], },
-#                              #                       equality_r_coef={1: [50, 100, 500], },
-#                              #                       inequality_intervals={0: [(-3, 1), (1, 3), (3, np.inf)], },
-#                              #                       inequality_r_coef={0: [100, 400, 600], }),
-#                              conditions=['optimize', '<=',], # '!='
-#                              mutation_lvl=0.35,
-#                              early_stop=None,
-#                              is_gray=True)
-
 with timex():
     ga_data = moga.optimize()
 # ga_data_conditions = bin_ga_conditions.optimize()
-
-pareto_front = np.array(ga_data.historical_best[-1])
-
-plt.scatter(pareto_front[:, 0], pareto_front[:, 1], facecolors='none', edgecolors='r')
-plt.xlabel('f1')
-plt.ylabel('f2')
-plt.show()
-
-
-# validation
-# ref_point = np.array([100,100,3])
-#
-# ind = HV(ref_point=ref_point)
-#
-# for step in ga_data.historical_best:
-#     print("HV", ind(np.array(step)), step)
-#
-# print(ind(ref_point))
