@@ -2,7 +2,7 @@ from typing import List, Union
 from .multi_fitness import MultiFitness
 
 
-class MultiHyperbolaFitness(MultiFitness):
+class VEGAHyperbolaFitness(MultiFitness):
     """
     A class for calculating fitness values for multiobjective optimization using the hyperbola approach.
     Inherits from MultiFitness.

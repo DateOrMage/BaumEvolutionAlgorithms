@@ -2,9 +2,10 @@ from .tournament_selection import TournamentSelection
 from baumeva.ga import MultiGaData
 
 
-class MultiTournamentSelection(TournamentSelection):
+class VEGATournamentSelection(TournamentSelection):
     """
-    Class for implementing tournament selection in a genetic algorithm (for multiobjective optimization).
+    Class for implementing tournament selection in a genetic algorithm (for multiobjective optimization
+    with the VEGA algorithm).
     Inherits from TournamentSelection.
     """
 
@@ -39,7 +40,7 @@ class MultiTournamentSelection(TournamentSelection):
         """
         Method for calculation the total number of parents to select.
 
-        :param ga_data: GaData instance containing population and related data.
+        :param ga_data: MultiGaData instance containing population and related data.
         :return: total number of parents.
         """
         return int(ga_data.children_percent*ga_data.population.num_individ/self.num_obj_functions)

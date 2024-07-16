@@ -1,6 +1,7 @@
 from typing import List, Callable, Union, Any
-from .ga import GaData, MultiGaData, BinaryPopulation, BinaryGrayPopulation, MultiHyperbolaFitness, BasePenalty, \
-    MultiTournamentSelection, OnePointCrossover, BinStringMutation, NewGeneration
+from .ga import GaData, MultiGaData, BinaryPopulation, BinaryGrayPopulation, VEGAHyperbolaFitness, BasePenalty, \
+    VEGATournamentSelection, VEGABalancedSelection, VEGARankedSelection, OnePointCrossover, BinStringMutation, \
+    NewGeneration
 
 
 class VEGA:
@@ -79,10 +80,9 @@ class VEGA:
 
         population.set_params(num_individ=self.num_individ, gens=self.gens, input_population=self.input_population)
         # init fitness func, selection, crossover, mutation, new generation
-        fitness_func = MultiHyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
+        fitness_func = VEGAHyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
                                         input_data=self.input_data, penalty=self.penalty, conditions=self.conditions)
-        selection = MultiTournamentSelection(num_obj_functions=num_obj_functions,
-                                             tournament_size=self.tournament_size)
+        selection = VEGARankedSelection(num_obj_functions=num_obj_functions)
         cross = OnePointCrossover()
         mutation = BinStringMutation(mutation_lvl=self.mutation_lvl)
         new_generation = NewGeneration(transfer_parents=self.transfer_parents)
@@ -93,7 +93,8 @@ class VEGA:
         ga_data.update()
         # main loop for GA perform
         for i in range(1, ga_data.num_generations):
-
+            if self.is_print:
+                ga_data.print_best_solution()
             selection.execute(ga_data)
             cross.execute(ga_data)
             mutation.execute(ga_data)
@@ -104,6 +105,6 @@ class VEGA:
             if ga_data.num_generation_no_improve > ga_data.early_stop:
                 break
 
-        if self.is_print:
-            ga_data.print_best_solution()
+        # if self.is_print:
+        #     ga_data.print_best_solution()
         return ga_data

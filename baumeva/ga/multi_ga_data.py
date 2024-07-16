@@ -119,8 +119,9 @@ class MultiGaData(GaData):
         """
         print('|' + '=' * 85 + '|')
         print(f'Index generation: {self.idx_generation - 1}')
-        for i, elem in enumerate(self.historical_mediocre):
-            print(str(i)+': '+str(elem))
+        print(self.historical_best[-1])
+        # for i, elem in enumerate(self.historical_mediocre):
+        #     print(str(i)+': '+str(elem))
         #print(self.historical_best)
         # print('Best solution:')
         # print(f'\tindex generation: {self.best_solution["idx_generation"]}')

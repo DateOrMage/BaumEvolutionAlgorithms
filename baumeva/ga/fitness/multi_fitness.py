@@ -4,7 +4,7 @@ from typing import List, Union
 
 class MultiFitness(BaseFitness):
     """
-    Class for calculating fitness values of one population in case of multiobjective optimization.
+    Class for calculating fitness values of one population in case of multiobjective optimization with VEGA.
     Inherits from BaseFitness
     attribute: __idx_opt_value: list of indices of optimization values from object functions.
     """

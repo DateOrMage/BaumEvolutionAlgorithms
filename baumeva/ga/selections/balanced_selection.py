@@ -20,6 +20,16 @@ class BalancedSelection(BaseSelection):
         """
         pass
 
+    @staticmethod
+    def get_total_num_parents(ga_data: GaData) -> int:
+        """
+        Method for calculation the total number of parents to select.
+
+        :param ga_data: GaData instance containing population and related data.
+        :return: total number of parents.
+        """
+        return int(ga_data.children_percent * ga_data.population.num_individ)
+
     def add_probabilities(self, ga_data: GaData):
         """
         Calculate and store selection probabilities based on individuals' scores.
@@ -52,7 +62,7 @@ class BalancedSelection(BaseSelection):
         :param ga_data: GaData instance containing population and related data.
         :return: None
         """
-        total_num_parents = int(ga_data.children_percent * ga_data.population.num_individ)
+        total_num_parents = self.get_total_num_parents(ga_data)
 
         for _ in range(total_num_parents):
             idxs = []
