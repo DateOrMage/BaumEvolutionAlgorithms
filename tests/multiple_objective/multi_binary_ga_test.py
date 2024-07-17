@@ -11,7 +11,7 @@ class timex:
 
     def __exit__(self, type, value, traceback):
         # Вывод времени работы
-        print('Время обработки: {:.2f} с'.format(time.time() - self.t))
+        print('Processing time: {:.2f} sec.'.format(time.time() - self.t))
 
 
 def griewank_func(value_list):
@@ -157,7 +157,7 @@ def quadratic(x: list) -> tuple:
     return (x[0] - 2)**2 + (x[1] - 2)**2, x[0]*x[0] + x[1]*x[1], (x[0] - 4)**2 + (x[1] - 1)**2
 
 
-moga = VEGA(num_generations=100,
+moga = FFGA(num_generations=1000,
             num_individ=100,
             gens=((0, 1, 0.01),)*30,
             obj_function=zdt1,

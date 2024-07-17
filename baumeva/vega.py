@@ -82,7 +82,7 @@ class VEGA:
         # init fitness func, selection, crossover, mutation, new generation
         fitness_func = VEGAHyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
                                         input_data=self.input_data, penalty=self.penalty, conditions=self.conditions)
-        selection = VEGARankedSelection(num_obj_functions=num_obj_functions)
+        selection = VEGABalancedSelection(num_obj_functions=num_obj_functions)
         cross = OnePointCrossover()
         mutation = BinStringMutation(mutation_lvl=self.mutation_lvl)
         new_generation = NewGeneration(transfer_parents=self.transfer_parents)
@@ -93,8 +93,6 @@ class VEGA:
         ga_data.update()
         # main loop for GA perform
         for i in range(1, ga_data.num_generations):
-            if self.is_print:
-                ga_data.print_best_solution()
             selection.execute(ga_data)
             cross.execute(ga_data)
             mutation.execute(ga_data)
@@ -105,6 +103,6 @@ class VEGA:
             if ga_data.num_generation_no_improve > ga_data.early_stop:
                 break
 
-        # if self.is_print:
-        #     ga_data.print_best_solution()
+        if self.is_print:
+            ga_data.print_best_solution()
         return ga_data
