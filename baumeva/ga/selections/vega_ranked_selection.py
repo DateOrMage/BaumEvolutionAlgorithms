@@ -10,13 +10,13 @@ class VEGARankedSelection(VEGABalancedSelection):
 
     score_type = 'rank'
 
-    def __init__(self, num_obj_functions: int):
+    def __init__(self, num_objectives: int):
         """
         Initializes the VEGARankedSelection instance.
 
         :return: None
         """
-        super().__init__(num_obj_functions)
+        super().__init__(num_objectives)
 
     def add_probabilities(self, ga_data: MultiGaData):
         """
@@ -50,6 +50,6 @@ class VEGARankedSelection(VEGABalancedSelection):
         :return: None
         """
         for ind in ga_data.population:
-            ind['rank'] = [0]*self.num_obj_functions
+            ind['rank'] = [0]*self.num_objectives
 
         super().execute(ga_data)

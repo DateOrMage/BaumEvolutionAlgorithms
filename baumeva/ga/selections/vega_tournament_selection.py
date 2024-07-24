@@ -11,15 +11,15 @@ class VEGATournamentSelection(TournamentSelection):
 
     idx: int = 0
 
-    def __init__(self, num_obj_functions: int, tournament_size: int = 3):
+    def __init__(self, num_objectives: int, tournament_size: int = 3):
         """
         Initialize the TournamentSelection instance.
 
-        :param num_obj_functions: The number of objectives.
+        :param num_objectives: The number of objectives.
         :param tournament_size: The size of each tournament (default: 3).
         :return: None
         """
-        self.num_obj_functions = num_obj_functions
+        self.num_objectives = num_objectives
         super().__init__(tournament_size=tournament_size)
 
     def get_best(self, tournament: list, ga_data: MultiGaData):
@@ -43,7 +43,7 @@ class VEGATournamentSelection(TournamentSelection):
         :param ga_data: MultiGaData instance containing population and related data.
         :return: total number of parents.
         """
-        return int(ga_data.children_percent*ga_data.population.num_individ/self.num_obj_functions)
+        return int(ga_data.children_percent*ga_data.population.num_individ/self.num_objectives)
 
     def tournament(self, ga_data: MultiGaData) -> None:
         """
@@ -53,7 +53,7 @@ class VEGATournamentSelection(TournamentSelection):
         :param ga_data: GaData instance containing population and related data.
         :return: None
         """
-        for self.idx in range(self.num_obj_functions):
+        for self.idx in range(self.num_objectives):
 
             super().tournament(ga_data)
 

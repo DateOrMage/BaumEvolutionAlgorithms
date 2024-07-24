@@ -264,6 +264,108 @@ This example demonstrates the optimization of function one_max() using elements 
 4. The genetic algorithm either runs for a predefined number of generations or stops early if there hasn't been an improvement in the population fitness for a specified number of generations.
 5. The result is the closest approximation found to the word 'algorithm'.
 
+### Multi-Objective optimization
+
+BaumEvA supports multi-objective optimization using the VEGA and FFGA algorithms. 
+
+The simplest way to run them is by using the VEGA and FFGA classes:
+
+```python
+def quadratic(x: list) -> tuple:
+    return (x[0] - 2)**2 + (x[1] - 2)**2, x[0]*x[0] + x[1]*x[1], (x[0] - 4)**2 + (x[1] - 1)**2
+
+vega = VEGA(num_generations=100,
+            num_individ=100,
+            gens=((0, 100, 0.01),)*2,
+            obj_function=quadratic,
+            is_gray=False,
+            mutation_lvl=0.05,
+            early_stop=None)
+
+ga_data = vega.optimize()
+```
+
+#### Advanced usage
+
+Modular approach is applicable to multi-objective optimization as well:
+
+```python
+from baumeva.ga import MultiGaData, BinaryPopulation, FFGAFitness, TournamentSelection, OnePointCrossover, \
+                       BinStringMutation, MultiNewGeneration, DynamicPenalty
+
+def rcm03(x: list) -> tuple:
+    f1 = x[0]*(16+x[2]**2)**0.5 + x[1]*(1+x[2]**2)**0.5
+    f2 = 20*(16+x[2]**2)**0.5 / (x[2]*x[0])
+    g1 = f1 - 0.1
+    g2 = f2 - 10000
+    g3 = 80*(1+x[2]**2)**0.5 / (x[2]*x[1]) - 10000
+    return f1, f2, g1, g2, g3
+
+ga_data = MultiGaData(num_generations=100, early_stop=20)        
+
+population = BinaryPopulation()
+population.set_params(num_individ=100, gens=((0.00001, 100, 0.01), (0.00001, 100, 0.01), (1, 3, 0.01)))
+population.fill()
+
+ga_data.population = population
+fitness_func = FFGAFitness(obj_function=rcm03, conditions=['optimize']*2 + ['<=']*3, penalty=DynamicPenalty())
+fitness_func.execute(ga_data)
+ga_data.update()
+
+selection = TournamentSelection(tournament_size=6)
+crossover = OnePointCrossover()
+mutation = BinStringMutation(0.15)
+new_generation = MultiNewGeneration('best')
+
+for i in range(ga_data.num_generations):
+
+  selection.execute(ga_data)
+  crossover.execute(ga_data)
+  mutation.execute(ga_data)
+  new_generation.execute(ga_data)
+  fitness_func.execute(ga_data)
+  ga_data.update()
+
+  if ga_data.num_generation_no_improve >= ga_data.early_stop:
+      print(f'Early stopping: {i} generation')
+      break
+
+
+print(f"Result:")
+ga_data.print_best_solution()
+```
+
+Note that we use MultiGaData class instead of GaData for storing the algorithm data during its run.
+
+#### Collector Usage
+
+Classes for multi-objective optimization also support the collector mode:
+
+```python
+from baumeva import CollectorGA
+from baumeva.ga import BinaryPopulation, VEGAHyperbolaFitness, VEGABalancedSelection, OnePointCrossover,\
+    BinStringMutation, NewGeneration, DynamicPenalty, MultiGaData
+
+def multilinear_conditions(x: list) -> tuple:
+    return -4*x[0]-2*x[1], -2*x[0]-4*x[1], -3*x[0]-9*x[1], -8*x[0]-2*x[1], -4*x[0]+x[1], -3*x[0]+2*x[1], 2*x[0] - 4*x[1], \
+        3*x[0] - x[1], 4*x[0] + 3*x[1], 2*x[0]+3*x[1], -x[0]+3*x[1], 2*x[0]-x[1], -x[0], -x[1]
+
+moga = CollectorGA(fitness=VEGAHyperbolaFitness(obj_function=multilinear_conditions, obj_value=[0,]*9,
+                                                conditions=['optimize']*9 + ['<=']*5, penalty=DynamicPenalty()),
+                   selection=VEGABalancedSelection(9),
+                   crossover=OnePointCrossover(),
+                   mutation=BinStringMutation(0.05),
+                   new_generation=NewGeneration('best'),
+                   storage=MultiGaData)
+
+moga.set_population(population=BinaryPopulation,
+                    num_individ=100,
+                    num_generations=1000,
+                    gens=((0, 100, 0.01), (0, 100, 0.01)))
+
+moga.optimize()
+```
+
 ## Documentation
 
 Still in progress. For now, you can read brief description of the library classes.
@@ -311,6 +413,11 @@ Attributes:
 - `best_solution (dict)` - dictionary representing the best individual solution found so far;
 - `gen_pool (tuple)` - in case of categorical GA is tuple of possible values for each gene.
 
+### MultiGaData
+Child class of GaData, implementing its functionality for multi-objective optimization. Supports all the attributes
+of the GaData class.
+
+
 ### NewGeneration
 Class for creating a new generation of individuals in a genetic algorithm. Supports the following parameter:
 - `transfer_parents (str, default: 'best')` - strategy for transferring certain amount of parents to the next generation. Can be 'best' or 'random'.
@@ -357,11 +464,17 @@ All classes support the following parameters:
 
 ### Classes for selection methods
 
-For all types GA:
+For all types GA except VEGA:
 
 - BalancedSelection()
 - RankedSelection()
 - TournamentSelection() - supports `tournament_size` parameter with default value - 3.
+
+For VEGA:
+
+- VEGABalancedSelection()
+- VEGARankedSelection()
+- VEGATournamentSelection()
 
 ### Classes for crossover methods
 

@@ -10,14 +10,14 @@ class VEGABalancedSelection(BalancedSelection):
 
     idx: int = 0
 
-    def __init__(self, num_obj_functions: int):
+    def __init__(self, num_objectives: int):
         """
         Initialize the VEGABalancedSelection instance.
 
-        :param num_obj_functions: The number of objectives.
+        :param num_objectives: The number of objectives.
         :return: None
         """
-        self.num_obj_functions = num_obj_functions
+        self.num_objectives = num_objectives
         super().__init__()
 
     def get_total_num_parents(self, ga_data: MultiGaData) -> int:
@@ -27,7 +27,7 @@ class VEGABalancedSelection(BalancedSelection):
         :param ga_data: MultiGaData instance containing population and related data.
         :return: total number of parents.
         """
-        return int(ga_data.children_percent * ga_data.population.num_individ / self.num_obj_functions)
+        return int(ga_data.children_percent * ga_data.population.num_individ / self.num_objectives)
 
     def add_probabilities(self, ga_data: MultiGaData):
         """
@@ -51,5 +51,5 @@ class VEGABalancedSelection(BalancedSelection):
         :param ga_data: MultiGaData instance containing population and related data.
         :return: None
         """
-        for self.idx in range(self.num_obj_functions):
+        for self.idx in range(self.num_objectives):
             super().execute(ga_data)

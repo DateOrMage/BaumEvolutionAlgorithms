@@ -35,9 +35,9 @@ class MultiNewGeneration(NewGeneration):
         ga_data.children.__dict__ = ga_data.population.__dict__
         if ga_data.population.is_phenotype:
             ga_data.population.get_phenotype()
-        ga_data.assign_ranks()
-        if not ga_data.population.is_sorted:
-            ga_data.population.sort_by_dict('rank')
+        # ga_data.assign_ranks()
+        # if not ga_data.population.is_sorted:
+        #     ga_data.population.sort_by_dict('rank')
 
         self.add_parents(ga_data, num_elites=10)
 

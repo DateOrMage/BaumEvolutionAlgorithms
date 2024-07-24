@@ -1,5 +1,6 @@
-from typing import List
-from .ga import GaData, BasePopulation, BaseFitness, BaseSelection, BaseCrossover, BaseMutation, NewGeneration
+from typing import List, Type
+from .ga import (GaData, MultiGaData, BasePopulation, BaseFitness, BaseSelection, BaseCrossover, BaseMutation,
+                 NewGeneration)
 
 
 class CollectorGA:
@@ -14,7 +15,8 @@ class CollectorGA:
                  selection: BaseSelection,
                  crossover: BaseCrossover,
                  mutation: BaseMutation,
-                 new_generation: NewGeneration) -> None:
+                 new_generation: NewGeneration,
+                 storage: Type[GaData] = GaData) -> None:
         """
         Initialization CollectorGA with next parameters:
         :param fitness: initialized subclass of BaseFitness;
@@ -22,15 +24,17 @@ class CollectorGA:
         :param crossover: initialized subclass of BaseCrossover;
         :param mutation: initialized subclass of BaseMutation;
         :param new_generation: initialized class NewGeneration;
+        :param storage: subclass of GaData;
         """
         self.fitness = fitness
         self.selection = selection
         self.crossover = crossover
         self.mutation = mutation
         self.new_generation = new_generation
+        self.storage = storage
 
     def set_population(self,
-                       population: BasePopulation,
+                       population: Type[BasePopulation],
                        num_individ: int,
                        num_generations: int,
                        gens: tuple,
@@ -48,7 +52,8 @@ class CollectorGA:
         :param early_stop: int, default: 10. Early stopping criteria, number of generation without improve;
         :return: None.
         """
-        self.ga_data = GaData(num_generations=num_generations, children_percent=children_percent, early_stop=early_stop)
+        self.ga_data = self.storage(num_generations=num_generations, children_percent=children_percent,
+                                    early_stop=early_stop)
         ppl = population()
         ppl.set_params(num_individ=num_individ, gens=gens, input_population=input_population)
         ppl.fill()

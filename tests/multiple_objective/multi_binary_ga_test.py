@@ -1,4 +1,5 @@
 from baumeva import FFGA, VEGA
+from baumeva.ga import DynamicPenalty
 import math
 import time
 
@@ -32,45 +33,13 @@ def sum_of_squares(value_list):
 # --------------------- http://www.vestnik.vsu.ru/pdf/analiz/2010/02/2010-02-06.pdf ----------------------------------
 
 
-def linear_f1(x: list) -> float:
-    return -4*x[0]-2*x[1]
-
-
-def linear_f2(x: list) -> float:
-    return -2*x[0]-4*x[1]
-
-
-def linear_f3(x: list) -> float:
-    return -3*x[0]-9*x[1]
-
-
-def linear_f4(x: list) -> float:
-    return -8*x[0]-2*x[1]
-
-
-def linear_f5(x: list) -> float:
-    return -4*x[0]+x[1]
-
-
-def linear_f6(x: list) -> float:
-    return -3*x[0]+2*x[1]
-
-
-def linear_f7(x: list) -> float:
-    return 2*x[0] - 4*x[1]
-
-
-def linear_f8(x: list) -> float:
-    return 3*x[0] - x[1]
-
-
-def linear_f9(x: list) -> float:
-    return 4*x[0] + 3*x[1]
-
-
 def multilinear_conditions(x: list) -> tuple:
-    return linear_f1(x), linear_f2(x), linear_f3(x), linear_f4(x), linear_f5(x), linear_f6(x), linear_f7(x), \
-        linear_f8(x), linear_f9(x), 2*x[0]+3*x[1], -x[0]+3*x[1], 2*x[0]-x[1], -x[0], -x[1]
+    """
+    conditions=['optimize']*9 + ['<=']*5
+    gens=((0, 100, 0.01), (0, 100, 0.01))
+    """
+    return -4*x[0]-2*x[1], -2*x[0]-4*x[1], -3*x[0]-9*x[1], -8*x[0]-2*x[1], -4*x[0]+x[1], -3*x[0]+2*x[1], 2*x[0] - 4*x[1], \
+        3*x[0] - x[1], 4*x[0] + 3*x[1], 2*x[0]+3*x[1], -x[0]+3*x[1], 2*x[0]-x[1], -x[0], -x[1]
 
 # ---------------------------- https://github.com/P-N-Suganthan/2021-RW-MOP/blob/main/RWMOP.pdf -----------------------
 # 2.1.3 Two Bar Truss Design (page 5)
@@ -157,13 +126,21 @@ def quadratic(x: list) -> tuple:
     return (x[0] - 2)**2 + (x[1] - 2)**2, x[0]*x[0] + x[1]*x[1], (x[0] - 4)**2 + (x[1] - 1)**2
 
 
-moga = FFGA(num_generations=1000,
+# moga = FFGA(num_generations=10,
+#             num_individ=100,
+#             gens=((0.00001, 100, 0.01), (0.00001, 100, 0.01), (1, 3, 0.01)),
+#             obj_function=rcm03,
+#             # obj_value=0,
+#             conditions=['optimize']*2 + ['<=']*3,
+#             penalty=DynamicPenalty(),
+#             is_gray=False,
+#             mutation_lvl=0.05,
+#             early_stop=None)
+
+moga = VEGA(num_generations=100,
             num_individ=100,
-            gens=((0, 1, 0.01),)*30,
-            obj_function=zdt1,
-            # obj_value=0,
-            conditions=['optimize']*2,
-            # penalty=DynamicPenalty(),
+            gens=((0, 100, 0.01),)*2,
+            obj_function=quadratic,
             is_gray=False,
             mutation_lvl=0.05,
             early_stop=None)

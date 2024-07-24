@@ -69,10 +69,10 @@ class VEGA:
         :return: GaData
         """
         # init GaData & Population
-        num_obj_functions = self.conditions.count('optimize')
-        ga_data = MultiGaData(num_obj_functions=num_obj_functions, num_generations=self.num_generations,
-                              children_percent=self.children_percent, early_stop=self.early_stop,
-                              obj_function=self.obj_function)
+        num_objectives = len(self.obj_function([0]*len(self.gens))) if self.conditions is None\
+            else self.conditions.count('optimize')
+        ga_data = MultiGaData(num_generations=self.num_generations, children_percent=self.children_percent,
+                              early_stop=self.early_stop)
         if self.is_gray:
             population = BinaryGrayPopulation()
         else:
@@ -81,8 +81,9 @@ class VEGA:
         population.set_params(num_individ=self.num_individ, gens=self.gens, input_population=self.input_population)
         # init fitness func, selection, crossover, mutation, new generation
         fitness_func = VEGAHyperbolaFitness(obj_function=self.obj_function, obj_value=self.obj_value,
-                                        input_data=self.input_data, penalty=self.penalty, conditions=self.conditions)
-        selection = VEGABalancedSelection(num_obj_functions=num_obj_functions)
+                                            input_data=self.input_data, penalty=self.penalty,
+                                            conditions=self.conditions)
+        selection = VEGATournamentSelection(num_objectives=num_objectives)
         cross = OnePointCrossover()
         mutation = BinStringMutation(mutation_lvl=self.mutation_lvl)
         new_generation = NewGeneration(transfer_parents=self.transfer_parents)

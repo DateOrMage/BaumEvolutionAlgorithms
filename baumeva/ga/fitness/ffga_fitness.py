@@ -34,8 +34,5 @@ class FFGAFitness(MultiFitness):
         :param ga_data: MultiGaData instance containing population and related data.
         :return: None
         """
-        if ga_data.population.is_phenotype:
-            ga_data.population.get_phenotype()
-        ga_data.assign_ranks()
 
         super().execute(ga_data)

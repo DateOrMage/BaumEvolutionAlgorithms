@@ -68,10 +68,9 @@ class FFGA:
         :return: GaData
         """
         # init GaData & Population
-        num_obj_functions = self.conditions.count('optimize')
-        ga_data = MultiGaData(num_obj_functions=num_obj_functions, num_generations=self.num_generations,
-                              children_percent=self.children_percent, early_stop=self.early_stop,
-                              obj_function=self.obj_function)
+
+        ga_data = MultiGaData(num_generations=self.num_generations, children_percent=self.children_percent,
+                              early_stop=self.early_stop)
         if self.is_gray:
             population = BinaryGrayPopulation()
         else:
@@ -79,8 +78,8 @@ class FFGA:
 
         population.set_params(num_individ=self.num_individ, gens=self.gens, input_population=self.input_population)
         # init fitness func, selection, crossover, mutation, new generation
-        fitness_func = FFGAFitness(obj_function=self.obj_function, obj_value=self.obj_value,
-                                   input_data=self.input_data, penalty=self.penalty, conditions=self.conditions)
+        fitness_func = FFGAFitness(obj_function=self.obj_function, obj_value=self.obj_value, input_data=self.input_data,
+                                   penalty=self.penalty, conditions=self.conditions)
         selection = BalancedSelection() # TournamentSelection(tournament_size=self.tournament_size)
         cross = OnePointCrossover()
         mutation = BinStringMutation(mutation_lvl=self.mutation_lvl)
